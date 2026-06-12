@@ -42,8 +42,6 @@ damage-glow:
 # Each additional block increases mining time by percent-per-block, limited by max-percent.
 mining-time:
   enabled: true
-  # packet: only sends the slower speed to the player; attribute: changes the player's real block break speed.
-  mode: packet
   percent-per-block: 100.0
   max-percent: 5000.0
 
