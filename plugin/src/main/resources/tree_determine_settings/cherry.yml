@@ -1,0 +1,10 @@
+logs:
+  - minecraft:cherry_log
+  - minecraft:cherry_wood
+leaves:
+  - minecraft:cherry_leaves
+radius: 7
+height: 18
+min-log-amount: 6
+max-log-amount: 96
+min-leaf-amount: 256

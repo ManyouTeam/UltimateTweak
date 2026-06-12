@@ -1,0 +1,57 @@
+enabled: true
+
+# Minimum interval between tree detections for the same player.
+cooldown-tick: 5
+
+require-shift: false
+
+match-item:
+  trigger:
+    material-tag:
+      - 'axes'
+  leaf-break:
+    has-enchants:
+      - 'custom:tree_shears'
+
+animation:
+  enabled: true
+  # random, same-as-player, away-from-player
+  direction: random
+  glow: true
+  glow-color: '#FFFFFF'
+  duration-ticks: 30
+  interval-ticks: 1
+  view-distance: 24
+  fall-damage:
+    enabled: false
+    players: true
+    entities: true
+    damage: 6.0
+    min-angle: 15.0
+    hit-radius: 0.5
+
+damage-glow:
+  enabled: true
+  hide-breaking-block: true
+  glow-color: '#FFFFFF'
+  duration-ticks: 40
+  view-distance: 24
+
+# Each log compounds the mining time by percent-per-log, limited by max-percent.
+mining-time:
+  enabled: true
+  # packet: only sends the slower speed to the player; attribute: changes the player's real block break speed.
+  mode: packet
+  percent-per-log: 100.0
+  max-percent: 5000.0
+
+damage-actions: []
+
+break-actions:
+  1:
+    type: sound
+    sound: entity.zombie.break_wooden_door
+    volume: 1.0
+    pitch: 1.0
+
+conditions: []

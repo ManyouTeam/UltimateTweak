@@ -1,0 +1,76 @@
+package cn.superiormc.ultimatetweak.managers;
+
+import cn.superiormc.ultimatetweak.objects.matchentity.*;
+import cn.superiormc.ultimatetweak.utils.CommonUtil;
+import cn.superiormc.ultimatetweak.utils.TextUtil;
+import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.LivingEntity;
+
+import java.util.Collection;
+import java.util.HashSet;
+
+public class MatchEntityManager {
+
+    public static MatchEntityManager matchEntityManager;
+
+    private final Collection<AbstractMatchEntityRule> rules = new HashSet<>();
+
+    public MatchEntityManager() {
+        matchEntityManager = this;
+        initRules();
+    }
+
+    private void initRules() {
+        registerNewRule(new EntityType());
+        //registerNewRule(new EntityName());
+        registerNewRule(new EntityContainsName());
+        registerNewRule(new EntityNone());
+        registerNewRule(new EntityHealth());
+        registerNewRule(new EntityTag());
+        registerNewRule(new EntityPDC());
+        registerNewRule(new Any());
+        registerNewRule(new Not());
+        registerNewRule(new Ranged());
+        registerNewRule(new Monster());
+        if (CommonUtil.checkPluginLoad("MythicMobs")) {
+            registerNewRule(new MythicMobs());
+        }
+        if (CommonUtil.checkPluginLoad("LevelledMobs")) {
+            registerNewRule(new LevelledMobs());
+        }
+        if (CommonUtil.checkPluginLoad("EnchantedMobs")) {
+            registerNewRule(new EntityPowers());
+            registerNewRule(new EntityPowersAmount());
+        }
+    }
+
+    public void registerNewRule(AbstractMatchEntityRule rule) {
+        rules.add(rule);
+        TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded match entity rule: " + rule.getClass().getSimpleName() + "!");
+    }
+
+    public boolean getMatch(ConfigurationSection section, LivingEntity entity) {
+        if (section == null) {
+            return true;
+        }
+        if (entity == null) {
+            return false;
+        }
+        for (AbstractMatchEntityRule rule : rules) {
+            if (ConfigManager.configManager.getBoolean("debug")) {
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fChecking rule: " + rule.getClass().getSimpleName() + "!");
+            }
+            if (rule.configNotContains(section)) {
+                continue;
+            }
+            if (!rule.getMatch(section, entity)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    public Collection<AbstractMatchEntityRule> getRules() {
+        return rules;
+    }
+}

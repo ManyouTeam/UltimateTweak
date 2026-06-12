@@ -1,0 +1,8 @@
+enabled: false
+
+# Supported values: boat, minecart
+vehicles:
+  - boat
+  - minecart
+
+# Omit match-entity to match all living entities.

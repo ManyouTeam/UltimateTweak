@@ -1,0 +1,54 @@
+enabled: true
+
+require-shift: true
+
+rules:
+  ores:
+    match-item:
+      material-tag:
+        - 'pickaxes'
+    match-block:
+      - 'minecraft:coal_ore'
+      - 'minecraft:deepslate_coal_ore'
+      - 'minecraft:iron_ore'
+      - 'minecraft:deepslate_iron_ore'
+      - 'minecraft:copper_ore'
+      - 'minecraft:deepslate_copper_ore'
+      - 'minecraft:gold_ore'
+      - 'minecraft:deepslate_gold_ore'
+      - 'minecraft:redstone_ore'
+      - 'minecraft:deepslate_redstone_ore'
+      - 'minecraft:emerald_ore'
+      - 'minecraft:deepslate_emerald_ore'
+      - 'minecraft:lapis_ore'
+      - 'minecraft:deepslate_lapis_ore'
+      - 'minecraft:diamond_ore'
+      - 'minecraft:deepslate_diamond_ore'
+      - 'minecraft:nether_gold_ore'
+      - 'minecraft:nether_quartz_ore'
+
+search:
+  # Whether diagonally touching blocks belong to the same vein.
+  diagonal: true
+  max-blocks: 64
+
+damage-glow:
+  enabled: true
+  hide-breaking-block: true
+  glow-color: '#FFFFFF'
+  duration-ticks: 40
+  view-distance: 24
+
+# Each additional block increases mining time by percent-per-block, limited by max-percent.
+mining-time:
+  enabled: true
+  # packet: only sends the slower speed to the player; attribute: changes the player's real block break speed.
+  mode: packet
+  percent-per-block: 100.0
+  max-percent: 5000.0
+
+damage-actions: []
+
+break-actions: []
+
+conditions: []

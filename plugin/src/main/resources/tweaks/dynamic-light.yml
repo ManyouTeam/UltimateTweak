@@ -1,0 +1,19 @@
+enabled: true
+
+# How often held items and the player's position are checked.
+check-interval-ticks: 2
+
+# Every rule is checked against both the main hand and off hand.
+rules:
+  torches:
+    light-level: 14
+    match-item:
+      material:
+        - torch
+        - soul_torch
+  lanterns:
+    light-level: 15
+    match-item:
+      material:
+        - lantern
+        - soul_lantern

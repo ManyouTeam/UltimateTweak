@@ -1,0 +1,19 @@
+# UltimateTweak by @PQguanfang
+#
+# Read the Wiki here: https://manyou.gitbook.io/ultimatetweak
+
+debug: false
+
+config-files:
+  language: 'en_US'
+  # Premium version only.
+  per-player-language: true
+  force-parse-mini-message: true
+
+debuild-item-method: 'LEGACY'
+
+# Support value: DEFAULT or ITEMBRIDGE
+hook-item-method: 'DEFAULT'
+
+math:
+  enabled: true

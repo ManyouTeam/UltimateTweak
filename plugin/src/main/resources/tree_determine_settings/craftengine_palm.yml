@@ -1,0 +1,14 @@
+logs:
+  - craftengine:default:palm_log
+  - craftengine:default:palm_wood
+  - craftengine:default:stripped_palm_log
+  - craftengine:default:stripped_palm_wood
+leaves:
+  - craftengine:default:palm_leaves
+radius: 6
+height: 18
+min-log-amount: 6
+max-log-amount: 32
+min-leaf-amount: 20
+max-leaf-amount: 256
+player-leave: false

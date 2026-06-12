@@ -1,0 +1,10 @@
+logs:
+  - minecraft:spruce_log
+  - minecraft:spruce_wood
+leaves:
+  - minecraft:spruce_leaves
+radius: 6
+height: 36
+min-log-amount: 6
+max-log-amount: 80
+min-leaf-amount: 9

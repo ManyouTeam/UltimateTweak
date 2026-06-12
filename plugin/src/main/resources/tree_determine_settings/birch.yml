@@ -1,0 +1,10 @@
+logs:
+  - minecraft:birch_log
+  - minecraft:birch_wood
+leaves:
+  - minecraft:birch_leaves
+radius: 4
+height: 20
+min-log-amount: 4
+max-log-amount: 80
+min-leaf-amount: 24

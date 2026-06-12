@@ -1,0 +1,25 @@
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# Maven
+target/
+**/target/
+**/dependency-reduced-pom.xml
+
+# Local dependencies
+*.jar
+!core/lib/ExecutableItems-7.24.7.9.jar
+!core/lib/LegacyCodesCompatibility.jar
+!core/lib/MythicChanger-2.6.2.jar
+!core/lib/SCore-5.24.7.9.jar
+
+# Local reference projects
+/Logically-1.15.8-free.jar_Decompiler.com/
+/falling-trees-datapack/
+
+# Runtime and OS files
+*.log
+.DS_Store
+Thumbs.db

@@ -1,0 +1,12 @@
+logs:
+  - minecraft:mangrove_log
+  - minecraft:mangrove_wood
+  - minecraft:mangrove_roots
+  - minecraft:muddy_mangrove_roots
+leaves:
+  - minecraft:mangrove_leaves
+radius: 8
+height: 32
+min-log-amount: 18
+max-log-amount: 180
+min-leaf-amount: 30

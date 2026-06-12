@@ -1,0 +1,32 @@
+error:
+  save-item-not-found: "&#98FB98[UltimateTweak] &cWe can't find this save item called {item}!"
+  args: "&#98FB98[UltimateTweak] &cWrong command usage, if you need help, please read plugin Wiki!"
+  in-game: "&#98FB98[UltimateTweak] &cYou have to use this command in game!"
+  miss-permission: "&#98FB98[UltimateTweak] &cYou don't have permission to use this command!"
+
+plugin:
+  reloaded: "&#98FB98[UltimateTweak] &fPlugin reloaded!"
+  saved: "&#98FB98[UltimateTweak] &fItem Saved!"
+  generated: "&#98FB98[UltimateTweak] &fGenerated hold item's item format at plugin config folder, please copy them into your configs!"
+
+command-tab:
+  type-item-id: "[Type Item ID you want]"
+
+tree-debug:
+  enabled: "&#98FB98[UltimateTweak] &aTree definition debug enabled: &e{id}"
+  enabled-hint: "&#98FB98[UltimateTweak] &7Now try mining a tree. Use /ut debug off to disable."
+  disabled: "&#98FB98[UltimateTweak] &aTree definition debug disabled."
+  not-found: "&#98FB98[UltimateTweak] &cTree definition not found: {id}"
+  header: "&#98FB98[UltimateTweak] &fTree debug: &e{id} &7(origin {position})"
+  check-pass: "&#98FB98[UltimateTweak] &a[PASS] &f{name}: &e{actual} &7(required: {expected})"
+  check-fail: "&#98FB98[UltimateTweak] &c[FAIL] &f{name}: &e{actual} &7(required: {expected})"
+  check-name:
+    origin-block: "origin block"
+    logs: "logs"
+    leaves: "leaves"
+  scanned: "&#98FB98[UltimateTweak] &7Scanned candidate blocks: {amount}"
+  result-pass: "&#98FB98[UltimateTweak] &aResult: this tree satisfies the definition."
+  result-fail: "&#98FB98[UltimateTweak] &cResult: [FAIL] lines above are why this tree is not recognized."
+  unlimited: "unlimited"
+
+dupe-removed: "&#98FB98[UltimateTweak] &fA illegal item from your inventory has been removed!"

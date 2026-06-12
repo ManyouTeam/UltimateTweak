@@ -1,0 +1,33 @@
+name: UltimateTweak
+version: '${project.version}'
+main: cn.superiormc.ultimatetweak.UltimateTweak
+api-version: '1.14'
+folia-supported: true
+author: PQguanfang
+softdepend:
+  # Item
+  - MMOItems
+  - ItemsAdder
+  - Oraxen
+  - Nexo
+  - EcoItems
+  - EcoArmor
+  - MythicMobs
+  - ExecutableItems
+  - CraftEngine
+  - NeigeItems
+  - eco
+  # Others
+  - NBTAPI
+  - LevelledMobs
+  - MythicChanger
+  - EnchantedMobs
+depend:
+  - packetevents
+commands:
+  ultimatetweak:
+    aliases:
+      - "tweak"
+      - "ut"
+    usage: "/ultimatetweak"
+    description: "UltimateTweak Main Command."

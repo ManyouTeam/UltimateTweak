@@ -1,0 +1,11 @@
+logs:
+  - minecraft:oak_log
+  - minecraft:oak_wood
+leaves:
+  - minecraft:oak_leaves
+radius: 6
+height: 40
+min-log-amount: 4
+max-log-amount: 80
+min-leaf-amount: 20
+player-leave: false

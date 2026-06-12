@@ -1,0 +1,17 @@
+enabled: true
+
+# hotbar: search slots 0-8; inventory: search the entire player storage inventory.
+search-scope: hotbar
+
+# Minimum interval between detections for the same player.
+cooldown-tick: 5
+
+# Candidate score:
+# block destroy speed (including efficiency) * multiplier ^ fortune level
+# Fortune only receives this bonus when the item is a preferred tool for the block.
+fortune-multiplier-per-level: 1.5
+
+conditions: []
+
+# Executed after the held hotbar slot is changed.
+switch-actions: []

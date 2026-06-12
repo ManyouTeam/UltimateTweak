@@ -1,0 +1,11 @@
+logs:
+  - minecraft:warped_stem
+  - minecraft:warped_hyphae
+leaves:
+  - minecraft:warped_wart_block
+  - minecraft:shroomlight
+radius: 4
+height: 26
+min-log-amount: 4
+max-log-amount: 180
+min-leaf-amount: 16

@@ -1,0 +1,31 @@
+error:
+  save-item-not-found: "&#98FB98[UltimateTweak] &c找不到名为 {item} 的保存物品！"
+  args: "&#98FB98[UltimateTweak] &c命令使用错误，如果需要帮助请查看插件Wiki！"
+  in-game: "&#98FB98[UltimateTweak] &c你必须在游戏内执行这个命令！"
+  miss-permission: "&#98FB98[UltimateTweak] &c你没有权限使用这个命令！"
+
+plugin:
+  reloaded: "&#98FB98[UltimateTweak] &f插件已重载！"
+  saved: "&#98FB98[UltimateTweak] &f物品已保存！"
+  generated: "&#98FB98[UltimateTweak] &f已在插件配置文件夹生成当前手持物品的物品格式，请复制到你的配置文件中！"
+
+command-tab:
+  type-item-id: "[输入你想要的物品 ID]"
+
+dupe-removed: "&#98FB98[UltimateTweak] &f你的背包的一件非法物品已被移除!"
+tree-debug:
+  enabled: "&#98FB98[UltimateTweak] &a已启用树定义调试：&e{id}"
+  enabled-hint: "&#98FB98[UltimateTweak] &7现在尝试挖掘一棵树。使用 /ut debug off 关闭调试。"
+  disabled: "&#98FB98[UltimateTweak] &a已关闭树定义调试。"
+  not-found: "&#98FB98[UltimateTweak] &c找不到树定义：{id}"
+  header: "&#98FB98[UltimateTweak] &f树定义调试：&e{id} &7（原点 {position}）"
+  check-pass: "&#98FB98[UltimateTweak] &a[通过] &f{name}：&e{actual} &7（要求：{expected}）"
+  check-fail: "&#98FB98[UltimateTweak] &c[失败] &f{name}：&e{actual} &7（要求：{expected}）"
+  check-name:
+    origin-block: "原点方块"
+    logs: "原木数量"
+    leaves: "树叶数量"
+  scanned: "&#98FB98[UltimateTweak] &7已扫描候选方块数量：{amount}"
+  result-pass: "&#98FB98[UltimateTweak] &a结果：这棵树满足该定义。"
+  result-fail: "&#98FB98[UltimateTweak] &c结果：上方标记为“失败”的项目是不识别这棵树的原因。"
+  unlimited: "无限制"
