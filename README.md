@@ -1,10 +1,10 @@
-# Welcome to **UltimateTweak**
+# 👋 Welcome to **UltimateTweak**
 
 > **UltimateTweak** is a modular quality-of-life plugin that brings useful survival tweaks to Spigot, Paper, and Folia servers.
 
 ---
 
-## Built-in Tweaks
+## ⚒️ Built-in Tweaks
 
 | Tweak | Description |
 | :-- | :-- |
@@ -17,7 +17,7 @@
 
 ---
 
-## Flexible Configuration
+## 🧩 Flexible Configuration
 
 Every tweak has its own configuration file and can be enabled, disabled, or customized independently.
 
@@ -31,7 +31,7 @@ UltimateTweak also provides flexible systems for:
 
 ---
 
-## Plugin Compatibility
+## 🔌 Plugin Compatibility
 
 UltimateTweak supports many popular custom item plugins, including:
 
@@ -60,7 +60,7 @@ It also supports many protection plugins, including:
 
 ---
 
-## Server Support
+## 🖥️ Server Support
 
 - Spigot
 - Paper
@@ -70,10 +70,10 @@ It also supports many protection plugins, including:
 
 ---
 
-## License
+## 📜 License
 
 Please read the [LICENSE](LICENSE) file before modifying or redistributing this project.
 
 ---
 
-### UltimateTweak - Small tweaks, better survival.
+### ❤️ UltimateTweak - Small tweaks, better survival.
