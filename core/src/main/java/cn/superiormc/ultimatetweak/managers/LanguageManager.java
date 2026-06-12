@@ -34,7 +34,7 @@ public class LanguageManager {
             return serverLanguage.toLowerCase();
         }
         try {
-            if (ConfigManager.configManager.getBoolean("config-files.per-player-language", true) && !UltimateTweak.freeVersion) {
+            if (ConfigManager.configManager.getBoolean("config-files.per-player-language", true)) {
                 return player.getLocale().toLowerCase();
             } else {
                 return serverLanguage.toLowerCase();

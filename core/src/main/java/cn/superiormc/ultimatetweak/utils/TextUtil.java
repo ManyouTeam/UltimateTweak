@@ -209,7 +209,7 @@ public class TextUtil {
             return;
         }
 
-        if (!rawText.contains("[") || UltimateTweak.freeVersion) {
+        if (!rawText.contains("[")) {
             UltimateTweak.methodUtil.sendChat(player, rawText);
             return;
         }
