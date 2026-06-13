@@ -1,7 +1,7 @@
 name: UltimateTweak
 version: '${project.version}'
 main: cn.superiormc.ultimatetweak.UltimateTweak
-api-version: '1.14'
+api-version: '1.20.5'
 folia-supported: true
 author: PQguanfang
 softdepend:
