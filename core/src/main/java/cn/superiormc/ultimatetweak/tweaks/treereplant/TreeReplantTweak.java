@@ -1,4 +1,4 @@
-package cn.superiormc.ultimatetweak.tweaks.multiblock.treereplant;
+package cn.superiormc.ultimatetweak.tweaks.treereplant;
 
 import cn.superiormc.ultimatetweak.hooks.blocks.AbstractBlockHook;
 import cn.superiormc.ultimatetweak.managers.HookManager;

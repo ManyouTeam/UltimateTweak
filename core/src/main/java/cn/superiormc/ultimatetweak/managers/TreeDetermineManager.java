@@ -180,9 +180,6 @@ public final class TreeDetermineManager {
                         }
 
                         Block next = block.getRelative(dx, dy, dz);
-                        if (player != null && !HookManager.hookManager.getProtectionCanUse(player, block.getLocation())) {
-                            continue;
-                        }
                         if (!isInsideScanBounds(next, world, originX, originY, originZ, maxRadius, maxHeight)) {
                             continue;
                         }

@@ -1,4 +1,4 @@
-package cn.superiormc.ultimatetweak.tweaks.veinmine;
+package cn.superiormc.ultimatetweak.tweaks.multiblock.veinmine;
 
 import cn.superiormc.ultimatetweak.managers.HookManager;
 import cn.superiormc.ultimatetweak.managers.MatchItemManager;
@@ -79,12 +79,9 @@ public class VeinMineTweak extends AbstractMultiBlockTweak<VeinMineConfig, VeinM
         Set<LocationKey> dropKeys = new HashSet<>();
         prepareDefaultDrops(session, blocks, dropKeys);
         getConfig().getBreakActions().runAllActions(player);
-        for (Block block : blocks) {
-            if (!breakBlock(player, session, block, false)) {
-                dropKeys.remove(LocationKey.of(block));
-            }
-        }
-        finish(session, player, dropKeys);
+        breakBlocksInBatches(player, session, blocks, block -> false,
+                block -> dropKeys.remove(LocationKey.of(block)),
+                () -> finish(session, player, dropKeys));
     }
 
     private List<Block> findVein(Player player, Block origin, String blockId) {
@@ -96,8 +93,7 @@ public class VeinMineTweak extends AbstractMultiBlockTweak<VeinMineConfig, VeinM
 
         while (!pending.isEmpty() && result.size() < getConfig().getMaxBlocks()) {
             Block block = pending.remove();
-            if (!blockId.equals(HookManager.hookManager.getBlockId(block))
-                    || !HookManager.hookManager.getProtectionCanUse(player, block.getLocation())) {
+            if (!blockId.equals(HookManager.hookManager.getBlockId(block))) {
                 continue;
             }
             result.add(block);

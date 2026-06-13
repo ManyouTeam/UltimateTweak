@@ -25,17 +25,24 @@ import org.jspecify.annotations.NonNull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
+import java.util.function.Predicate;
 
 public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig, D>
         extends AbstractTweak<C> {
 
+    private static final long NANOS_PER_TICK = 50_000_000L;
+
     private final Map<Object, MultiBlockSession> sessions = new ConcurrentHashMap<>();
+
+    private final Map<UUID, Long> lastDetectionNanos = new ConcurrentHashMap<>();
 
     protected AbstractMultiBlockTweak(String id, C config) {
         super(id, config);
@@ -51,28 +58,51 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
     public void onReload() {
         sessions.values().forEach(MultiBlockSession::close);
         sessions.clear();
+        lastDetectionNanos.clear();
         super.onReload();
+    }
+
+    @Override
+    public void onDisable() {
+        sessions.values().forEach(MultiBlockSession::close);
+        sessions.clear();
+        lastDetectionNanos.clear();
+        super.onDisable();
     }
 
     @Override
     public final void onBlockDamage(BlockDamageEvent event) {
         Player player = event.getPlayer();
         Block block = event.getBlock();
-        if (!shouldTrigger(player, block.getLocation())) {
+        UUID playerId = player.getUniqueId();
+        if (sessions.values().stream().anyMatch(session -> session.playerId.equals(playerId) && session.breaking)
+                || !shouldTrigger(player, block.getLocation())) {
             return;
+        }
+        int cooldownTicks = getConfig().getCooldownTicks();
+        if (cooldownTicks > 0) {
+            long now = System.nanoTime();
+            Long previous = lastDetectionNanos.get(playerId);
+            if (previous != null && now - previous < cooldownTicks * NANOS_PER_TICK) {
+                return;
+            }
+            lastDetectionNanos.put(playerId, now);
         }
         Detection<D> detection = detect(player, block);
         if (detection == null || detection.blocks().isEmpty()) {
             return;
         }
 
-        UUID playerId = player.getUniqueId();
-        String pendingKey = getPendingKey(playerId, block);
+        String pendingKey = playerId + ":" + LocationKey.of(block);
         MultiBlockSession currentSession = sessions.get(detection.key());
         if (currentSession != null && !currentSession.playerId.equals(playerId)) {
             return;
         }
-        removePreviousPlayerSession(playerId, pendingKey);
+        for (MultiBlockSession session : new ArrayList<>(sessions.values())) {
+            if (session.playerId.equals(playerId) && !session.breaking && !session.pendingKey.equals(pendingKey)) {
+                removeSession(session);
+            }
+        }
         MultiBlockSession newSession = new MultiBlockSession(playerId, pendingKey, detection, LocationKey.of(block));
         MultiBlockSession lockOwner = sessions.putIfAbsent(detection.key(), newSession);
         if (lockOwner != null && !lockOwner.playerId.equals(playerId)) {
@@ -87,11 +117,28 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
     @Override
     public final void onBlockBreak(BlockBreakEvent event) {
         LocationKey locationKey = LocationKey.of(event.getBlock());
-        if (consumeInternalBreak(locationKey) || !shouldTrigger(event.getPlayer(), event.getBlock().getLocation())) {
+        for (MultiBlockSession candidate : sessions.values()) {
+            BlockOperation operation = candidate.blockOperations.get(locationKey);
+            if (operation != null && operation.consumeInternalBreak()) {
+                return;
+            }
+        }
+        if (!shouldTrigger(event.getPlayer(), event.getBlock().getLocation())) {
             return;
         }
-        MultiBlockSession session = findSessionByPendingKey(
-                getPendingKey(event.getPlayer().getUniqueId(), event.getBlock()));
+
+        UUID playerId = event.getPlayer().getUniqueId();
+        String pendingKey = playerId + ":" + locationKey;
+        MultiBlockSession session = null;
+        for (MultiBlockSession candidate : sessions.values()) {
+            if (candidate.pendingKey.equals(pendingKey)) {
+                session = candidate;
+                break;
+            }
+            if (candidate.playerId.equals(playerId) && candidate.detectedBlockKeys.contains(locationKey)) {
+                session = candidate;
+            }
+        }
         if (session == null) {
             return;
         }
@@ -99,6 +146,11 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         session.clearGlow();
         List<Block> blocks = getCurrentBlocks(session.data());
         if (!isStillValid(session.data(), blocks)) {
+            removeSession(session);
+            return;
+        }
+        blocks.removeIf(block -> !HookManager.hookManager.getProtectionCanUse(event.getPlayer(), block.getLocation()));
+        if (blocks.isEmpty()) {
             removeSession(session);
             return;
         }
@@ -114,12 +166,20 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
     @Override
     public final void onBlockDropItem(BlockDropItemEvent event) {
-        BlockOperation operation = findBlockOperation(LocationKey.of(event.getBlock()));
+        BlockOperation operation = null;
+        LocationKey locationKey = LocationKey.of(event.getBlock());
+        for (MultiBlockSession session : sessions.values()) {
+            operation = session.blockOperations.get(locationKey);
+            if (operation != null) {
+                break;
+            }
+        }
         if (operation == null) {
             return;
         }
+        BlockOperation dropOperation = operation;
         event.getItems().forEach(item -> {
-            operation.addDrop(item.getItemStack());
+            dropOperation.addDrop(item.getItemStack());
             item.remove();
         });
         event.getItems().clear();
@@ -127,13 +187,20 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
     @Override
     public void onNoSwingItem(UUID playerId) {
-        clearPlayerSessions(playerId);
+        sessions.values().stream()
+                .filter(session -> session.playerId.equals(playerId) && !session.breaking)
+                .toList()
+                .forEach(this::removeSession);
     }
 
     @Override
     public final void onPlayerQuit(PlayerQuitEvent event) {
         UUID playerId = event.getPlayer().getUniqueId();
-        clearPlayerSessions(playerId);
+        sessions.values().stream()
+                .filter(session -> session.playerId.equals(playerId))
+                .toList()
+                .forEach(this::removeSession);
+        lastDetectionNanos.remove(playerId);
     }
 
     protected abstract Detection<D> detect(Player player, Block origin);
@@ -180,21 +247,70 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
     protected final boolean breakBlock(Player player, MultiBlockSession session, Block block, boolean naturally) {
         LocationKey key = LocationKey.of(block);
-        session.markInternalBreak(key);
+        if (!HookManager.hookManager.getProtectionCanUse(player, block.getLocation())) {
+            session.blockOperations.remove(key);
+            return false;
+        }
+        BlockOperation operation = session.blockOperations.get(key);
+        if (operation != null) {
+            operation.markInternalBreak();
+        }
         boolean broken = naturally ? block.breakNaturally() : player.breakBlock(block);
         if (naturally || !broken) {
-            session.consumeInternalBreak(key);
+            if (operation != null) {
+                operation.consumeInternalBreak();
+            }
         }
         if (!broken) {
-            session.removeBlockOperation(key);
+            session.blockOperations.remove(key);
         }
         return broken;
+    }
+
+    protected final void breakBlocksInBatches(Player player,
+                                              MultiBlockSession session,
+                                              List<Block> blocks,
+                                              Predicate<Block> breakNaturally,
+                                              Consumer<Block> onFailure,
+                                              Runnable onComplete) {
+        if (blocks.isEmpty()) {
+            onComplete.run();
+            return;
+        }
+
+        int blocksPerTick = getConfig().getBlocksPerTick();
+        int[] index = {0};
+        SchedulerUtil[] task = new SchedulerUtil[1];
+        session.breaking = true;
+        task[0] = SchedulerUtil.runTaskTimer(player, () -> {
+            if (!player.isOnline()) {
+                task[0].cancel();
+                session.breakTask = null;
+                removeSession(session);
+                return;
+            }
+
+            int end = Math.min(index[0] + blocksPerTick, blocks.size());
+            while (index[0] < end) {
+                Block block = blocks.get(index[0]++);
+                if (!breakBlock(player, session, block, breakNaturally.test(block)) && onFailure != null) {
+                    onFailure.accept(block);
+                }
+            }
+
+            if (index[0] >= blocks.size()) {
+                task[0].cancel();
+                session.breakTask = null;
+                onComplete.run();
+            }
+        }, 1L, 1L);
+        session.breakTask = task[0];
     }
 
     protected final void finish(MultiBlockSession session, Player player, Set<LocationKey> dropKeys) {
         SchedulerUtil.runSync(player, () -> {
             for (LocationKey key : dropKeys) {
-                BlockOperation operation = session.removeBlockOperation(key);
+                BlockOperation operation = session.blockOperations.remove(key);
                 if (operation == null || operation.isEmpty()) {
                     continue;
                 }
@@ -216,49 +332,6 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
     }
 
-    private void removePreviousPlayerSession(UUID playerId, String pendingKey) {
-        for (MultiBlockSession session : new ArrayList<>(sessions.values())) {
-            if (session.playerId.equals(playerId) && !session.pendingKey.equals(pendingKey)) {
-                removeSession(session);
-            }
-        }
-    }
-
-    public final void clearPlayerSessions(UUID playerId) {
-        sessions.values().stream()
-                .filter(session -> session.playerId.equals(playerId))
-                .toList()
-                .forEach(this::removeSession);
-    }
-
-    private MultiBlockSession findSessionByPendingKey(String pendingKey) {
-        for (MultiBlockSession session : sessions.values()) {
-            if (session.pendingKey.equals(pendingKey)) {
-                return session;
-            }
-        }
-        return null;
-    }
-
-    private BlockOperation findBlockOperation(LocationKey key) {
-        for (MultiBlockSession session : sessions.values()) {
-            BlockOperation operation = session.blockOperations.get(key);
-            if (operation != null) {
-                return operation;
-            }
-        }
-        return null;
-    }
-
-    private boolean consumeInternalBreak(LocationKey key) {
-        BlockOperation operation = findBlockOperation(key);
-        return operation != null && operation.consumeInternalBreak();
-    }
-
-    private String getPendingKey(UUID playerId, Block block) {
-        return playerId + ":" + LocationKey.of(block);
-    }
-
     protected final class MultiBlockSession {
 
         private final UUID playerId;
@@ -269,9 +342,15 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
         private final LocationKey breakingBlockKey;
 
+        private final Set<LocationKey> detectedBlockKeys;
+
         private final Map<LocationKey, BlockOperation> blockOperations = new ConcurrentHashMap<>();
 
         private MultiBlockDisplayGlow.GlowSession glowSession;
+
+        private SchedulerUtil breakTask;
+
+        private boolean breaking;
 
         private MultiBlockSession(UUID playerId,
                                   String pendingKey,
@@ -281,6 +360,10 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
             this.pendingKey = pendingKey;
             this.detection = detection;
             this.breakingBlockKey = breakingBlockKey;
+            this.detectedBlockKeys = new HashSet<>();
+            for (Block block : detection.blocks()) {
+                detectedBlockKeys.add(LocationKey.of(block));
+            }
         }
 
         public D data() {
@@ -289,22 +372,6 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
         public void prepareDrop(LocationKey key, Location dropLocation) {
             blockOperations.put(key, new BlockOperation(dropLocation));
-        }
-
-        public void markInternalBreak(LocationKey key) {
-            BlockOperation operation = blockOperations.get(key);
-            if (operation != null) {
-                operation.markInternalBreak();
-            }
-        }
-
-        public boolean consumeInternalBreak(LocationKey key) {
-            BlockOperation operation = blockOperations.get(key);
-            return operation != null && operation.consumeInternalBreak();
-        }
-
-        public BlockOperation removeBlockOperation(LocationKey key) {
-            return blockOperations.remove(key);
         }
 
         private void applyGlow() {
@@ -354,6 +421,10 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
 
         private void close() {
+            if (breakTask != null) {
+                breakTask.cancel();
+                breakTask = null;
+            }
             clearMiningSlowdown();
             clearGlow();
             blockOperations.clear();

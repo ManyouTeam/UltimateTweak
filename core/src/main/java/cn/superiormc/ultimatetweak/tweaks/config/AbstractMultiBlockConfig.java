@@ -72,6 +72,14 @@ public abstract class AbstractMultiBlockConfig extends AbstractTweakConfig {
         return getBoolean("mining-time.enabled", true);
     }
 
+    public int getCooldownTicks() {
+        return Math.max(0, getInt("cooldown-ticks", 5));
+    }
+
+    public int getBlocksPerTick() {
+        return Math.max(1, getInt("blocks-per-tick", 32));
+    }
+
     public abstract double getMiningTimePercentPerBlock();
 
     public double getMaxMiningTimePercent() {

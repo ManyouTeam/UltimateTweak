@@ -152,7 +152,11 @@ public final class TreeBlockDisplayAnimation {
 
         private final FallDamageOptions fallDamageOptions;
 
+        private final double searchRadius;
+
         private final Set<UUID> damagedEntities = new HashSet<>();
+
+        private int lastDamageCheckTicks = -1_000_000;
 
         private AnimationSession(World world,
                                  Block pivotBlock,
@@ -177,6 +181,7 @@ public final class TreeBlockDisplayAnimation {
             this.durationTicks = durationTicks;
             this.intervalTicks = intervalTicks;
             this.fallDamageOptions = fallDamageOptions == null ? FallDamageOptions.disabled() : fallDamageOptions;
+            this.searchRadius = calculateSearchRadius();
         }
 
         public void play(Runnable onComplete) {
@@ -193,49 +198,84 @@ public final class TreeBlockDisplayAnimation {
                 }
                 return;
             }
+            SchedulerUtil.runTaskAsynchronously(() -> {
+                List<AnimationFrame> frames = calculateFrames();
+                SchedulerUtil.runSync(center(), () -> startAnimation(frames, onComplete));
+            });
+        }
 
-            final int[] elapsedTicks = {0};
+        private List<AnimationFrame> calculateFrames() {
+            List<AnimationFrame> frames = new ArrayList<>();
+            for (int elapsedTicks = intervalTicks; elapsedTicks <= durationTicks; elapsedTicks += intervalTicks) {
+                frames.add(calculateFrame(Math.min(elapsedTicks, durationTicks)));
+            }
+            if (frames.isEmpty() || frames.get(frames.size() - 1).elapsedTicks() < durationTicks) {
+                frames.add(calculateFrame(durationTicks));
+            }
+            return frames;
+        }
+
+        private AnimationFrame calculateFrame(int elapsedTicks) {
+            double progress = Math.min((double) elapsedTicks / durationTicks, 1.0);
+            double eased = progress * progress * progress
+                    * (progress * (progress * 6.0 - 15.0) + 10.0);
+            float angle = (float) (MAX_DEGREES * eased);
+            Quaternionf rotation = getRotation(direction, (float) Math.toRadians(angle));
+            List<org.joml.Vector3f> translations = new ArrayList<>(blocks().size());
+            List<org.joml.Vector3f> centers = new ArrayList<>(blocks().size());
+            for (DisplayBlock block : blocks()) {
+                translations.add(getDisplayTranslation(block, rotation));
+                centers.add(getRotatedCenter(block, pivot, rotation));
+            }
+            return new AnimationFrame(elapsedTicks, angle, rotation, translations, centers);
+        }
+
+        private void startAnimation(List<AnimationFrame> frames, Runnable onComplete) {
+            if (frames.isEmpty()) {
+                complete(onComplete);
+                return;
+            }
+
+            final int[] frameIndex = {0};
             final SchedulerUtil[] task = new SchedulerUtil[1];
             task[0] = SchedulerUtil.runTaskTimer(() -> {
-                elapsedTicks[0] = Math.min(elapsedTicks[0] + intervalTicks, durationTicks);
-                double progress = Math.min((double) elapsedTicks[0] / durationTicks, 1.0);
-                double eased = progress * progress * progress
-                        * (progress * (progress * 6.0 - 15.0) + 10.0);
-                float angle = (float) (MAX_DEGREES * eased);
-                Quaternionf rotation = getRotation(direction, (float) Math.toRadians(angle));
+                AnimationFrame frame = frames.get(frameIndex[0]++);
+                updateDisplays(frame.rotation(), frame.translations());
+                applyFallDamage(frame);
 
-                sendDisplayTeleport(rotation);
-                updateDisplays(rotation);
-                applyFallDamage(rotation, angle);
-
-                if (elapsedTicks[0] >= durationTicks) {
-                    destroyDisplays();
-                    playLandingEffects();
+                if (frameIndex[0] >= frames.size()) {
                     if (task[0] != null) {
                         task[0].cancel();
                     }
-                    if (onComplete != null) {
-                        onComplete.run();
-                    }
+                    SchedulerUtil.runTaskLater(() -> complete(onComplete), intervalTicks);
                 }
             }, 1L, intervalTicks);
         }
 
-        private void sendDisplayTeleport(Quaternionf rotation) {
-            for (DisplayEntity displayEntity : entities()) {
-                org.joml.Vector3f position = getRotatedPosition(displayEntity.block(), pivot, rotation);
-                teleport(displayEntity, position);
+        private void complete(Runnable onComplete) {
+            destroyDisplays();
+            playLandingEffects();
+            if (onComplete != null) {
+                onComplete.run();
             }
         }
 
-        private void applyFallDamage(Quaternionf rotation, float angle) {
+        private org.joml.Vector3f getDisplayTranslation(DisplayBlock block, Quaternionf rotation) {
+            org.joml.Vector3f rotatedPosition = getRotatedPosition(block, pivot, rotation);
+            return rotatedPosition
+                    .sub(block.x(), block.y(), block.z())
+                    .add(getRotatedBaseTranslation(rotation));
+        }
+
+        private void applyFallDamage(AnimationFrame frame) {
             if (!fallDamageOptions.enabled()
                     || fallDamageOptions.damage() <= 0.0
-                    || angle < fallDamageOptions.minAngle()) {
+                    || frame.angle() < fallDamageOptions.minAngle()
+                    || frame.elapsedTicks() - lastDamageCheckTicks < fallDamageOptions.checkIntervalTicks()) {
                 return;
             }
+            lastDamageCheckTicks = frame.elapsedTicks();
 
-            double searchRadius = getSearchRadius();
             for (LivingEntity entity : world().getNearbyLivingEntities(
                     new Location(world(), pivot.x, pivot.y, pivot.z),
                     searchRadius, searchRadius, searchRadius)) {
@@ -243,7 +283,7 @@ public final class TreeBlockDisplayAnimation {
                         || entity.isDead()
                         || entity instanceof Player && !fallDamageOptions.damagePlayers()
                         || !(entity instanceof Player) && !fallDamageOptions.damageEntities()
-                        || !isHitByTree(entity, rotation)) {
+                        || !isHitByTree(entity, frame.centers())) {
                     continue;
                 }
                 damagedEntities.add(entity.getUniqueId());
@@ -251,10 +291,9 @@ public final class TreeBlockDisplayAnimation {
             }
         }
 
-        private boolean isHitByTree(LivingEntity entity, Quaternionf rotation) {
+        private boolean isHitByTree(LivingEntity entity, List<org.joml.Vector3f> centers) {
             BoundingBox hitBox = entity.getBoundingBox().expand(fallDamageOptions.hitRadius());
-            for (DisplayBlock block : blocks()) {
-                org.joml.Vector3f position = getRotatedCenter(block, pivot, rotation);
+            for (org.joml.Vector3f position : centers) {
                 if (hitBox.contains(position.x, position.y, position.z)) {
                     return true;
                 }
@@ -262,7 +301,7 @@ public final class TreeBlockDisplayAnimation {
             return false;
         }
 
-        private double getSearchRadius() {
+        private double calculateSearchRadius() {
             double radiusSquared = 1.0;
             for (DisplayBlock block : blocks()) {
                 double dx = block.x() + 0.5 - pivot.x;
@@ -306,6 +345,13 @@ public final class TreeBlockDisplayAnimation {
             }
             return result;
         }
+    }
+
+    private record AnimationFrame(int elapsedTicks,
+                                  float angle,
+                                  Quaternionf rotation,
+                                  List<org.joml.Vector3f> translations,
+                                  List<org.joml.Vector3f> centers) {
     }
 
     public static final class AnimationBlock {
@@ -352,10 +398,11 @@ public final class TreeBlockDisplayAnimation {
                                     boolean damageEntities,
                                     double damage,
                                     double minAngle,
-                                    double hitRadius) {
+                                    double hitRadius,
+                                    int checkIntervalTicks) {
 
         public static FallDamageOptions disabled() {
-            return new FallDamageOptions(false, false, false, 0.0, 0.0, 0.0);
+            return new FallDamageOptions(false, false, false, 0.0, 0.0, 0.0, 1);
         }
     }
 }

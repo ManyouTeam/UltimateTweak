@@ -16,13 +16,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 
 public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, TreeDetectionResult> {
-
-    private static final long NANOS_PER_TICK = 50_000_000L;
-
-    private final ConcurrentHashMap<UUID, Long> lastDetectionNanos = new ConcurrentHashMap<>();
 
     public TreeCutterTweak(TreeCutterConfig config) {
         super("TreeCutter", config);
@@ -30,9 +25,6 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
 
     @Override
     protected Detection<TreeDetectionResult> detect(Player player, Block origin) {
-        if (!canDetect(player.getUniqueId())) {
-            return null;
-        }
         TreeDetectionResult result = TreeDetermineManager.treeDetermineManager.determineTree(player, origin);
         if (result == null || !CommonUtil.hasEnoughDurability(
                 player.getInventory().getItemInMainHand(), result.logAmount())) {
@@ -40,33 +32,6 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
         }
         return detection(TreeKey.of(result), result,
                 TreeDetermineManager.treeDetermineManager.getValidBlocks(result), result.logAmount());
-    }
-
-    @Override
-    public void onReload() {
-        lastDetectionNanos.clear();
-        super.onReload();
-    }
-
-    @Override
-    public void onDisable() {
-        lastDetectionNanos.clear();
-        super.onDisable();
-    }
-
-    private boolean canDetect(UUID playerId) {
-        int cooldownTicks = getConfig().getCooldownTicks();
-        if (cooldownTicks <= 0) {
-            return true;
-        }
-        long now = System.nanoTime();
-        long cooldownNanos = cooldownTicks * NANOS_PER_TICK;
-        Long previous = lastDetectionNanos.get(playerId);
-        if (previous != null && now - previous < cooldownNanos) {
-            return false;
-        }
-        lastDetectionNanos.put(playerId, now);
-        return true;
     }
 
     @Override
@@ -119,7 +84,8 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
                             getConfig().shouldFallDamageEntities(),
                             getConfig().getFallDamageAmount(),
                             getConfig().getFallDamageMinAngle(),
-                            getConfig().getFallDamageHitRadius()));
+                            getConfig().getFallDamageHitRadius(),
+                            getConfig().getFallDamageCheckIntervalTicks()));
         }
 
         Set<LocationKey> dropKeys = new HashSet<>();
@@ -137,20 +103,20 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
         }
 
         getConfig().getBreakActions().runAllActions(player);
-        for (Block block : blocks) {
-            boolean naturally = TreeDetermineManager.treeDetermineManager.isLeafBlock(block, result.treeDefinition())
-                    && !breakLeaves;
-            if (!breakBlock(player, session, block, naturally)) {
-                dropKeys.remove(LocationKey.of(block));
+        TreeBlockDisplayAnimation.AnimationSession finalAnimationSession = animationSession;
+        Runnable afterBreak = () -> {
+            Runnable finish = () -> finish(session, player, dropKeys);
+            if (playAnimation && finalAnimationSession != null) {
+                finalAnimationSession.play(finish);
+            } else {
+                finish.run();
             }
-        }
-
-        Runnable finish = () -> finish(session, player, dropKeys);
-        if (playAnimation && animationSession != null) {
-            animationSession.play(finish);
-        } else {
-            finish.run();
-        }
+        };
+        breakBlocksInBatches(player, session, blocks,
+                block -> TreeDetermineManager.treeDetermineManager.isLeafBlock(block, result.treeDefinition())
+                        && !breakLeaves,
+                block -> dropKeys.remove(LocationKey.of(block)),
+                afterBreak);
     }
 
     private record TreeKey(UUID worldId, int x, int y, int z) {

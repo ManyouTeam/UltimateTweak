@@ -18,6 +18,7 @@ import org.joml.Quaternionf;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.function.Function;
 
 public abstract class AbstractBlockDisplayEffect {
 
@@ -80,17 +81,34 @@ public abstract class AbstractBlockDisplayEffect {
         }
 
         for (DisplayBlock block : blocks) {
-            WrapperEntity entity = spawnBlockDisplay(viewers, block, null);
+            WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(block.blockData());
+            WrapperEntity entity = spawnBlockDisplay(viewers, block, blockState, null);
             if (entity != null) {
-                entities.add(new DisplayEntity(block, entity));
+                entities.add(new DisplayEntity(block, blockState, entity));
             }
         }
         return !entities.isEmpty();
     }
 
     protected void updateDisplays(Quaternionf rotation) {
+        updateDisplays(rotation, (Function<DisplayBlock, org.joml.Vector3f>) null);
+    }
+
+    protected void updateDisplays(Quaternionf rotation,
+                                  Function<DisplayBlock, org.joml.Vector3f> translationProvider) {
         for (DisplayEntity displayEntity : entities) {
-            updateMetadata(displayEntity.entity(), displayEntity.block(), rotation);
+            org.joml.Vector3f translation = translationProvider == null
+                    ? null
+                    : translationProvider.apply(displayEntity.block());
+            updateMetadata(displayEntity.entity(), displayEntity.blockState(), rotation, translation);
+        }
+    }
+
+    protected void updateDisplays(Quaternionf rotation, List<org.joml.Vector3f> translations) {
+        int size = Math.min(entities.size(), translations.size());
+        for (int index = 0; index < size; index++) {
+            DisplayEntity displayEntity = entities.get(index);
+            updateMetadata(displayEntity.entity(), displayEntity.blockState(), rotation, translations.get(index));
         }
     }
 
@@ -133,8 +151,10 @@ public abstract class AbstractBlockDisplayEffect {
         return viewers;
     }
 
-    private WrapperEntity spawnBlockDisplay(List<Player> viewers, DisplayBlock block, Quaternionf rotation) {
-        WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(block.blockData());
+    private WrapperEntity spawnBlockDisplay(List<Player> viewers,
+                                            DisplayBlock block,
+                                            WrappedBlockState blockState,
+                                            Quaternionf rotation) {
         if (blockState == null) {
             return null;
         }
@@ -148,21 +168,26 @@ public abstract class AbstractBlockDisplayEffect {
         return entity;
     }
 
-    private void updateMetadata(WrapperEntity entity, DisplayBlock block, Quaternionf rotation) {
-        if (entity == null || block == null) {
+    private void updateMetadata(WrapperEntity entity,
+                                WrappedBlockState blockState,
+                                Quaternionf rotation,
+                                org.joml.Vector3f translation) {
+        if (entity == null || blockState == null) {
             return;
         }
 
-        WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(block.blockData());
-        if (blockState == null) {
-            return;
-        }
-
-        applyMetadata(entity, blockState, rotation);
+        applyMetadata(entity, blockState, rotation, translation);
         entity.refresh();
     }
 
     private void applyMetadata(WrapperEntity entity, WrappedBlockState blockState, Quaternionf rotation) {
+        applyMetadata(entity, blockState, rotation, null);
+    }
+
+    private void applyMetadata(WrapperEntity entity,
+                               WrappedBlockState blockState,
+                               Quaternionf rotation,
+                               org.joml.Vector3f translation) {
         BlockDisplayMeta meta = entity.getEntityMeta(BlockDisplayMeta.class);
         meta.setViewRange((float) viewDistance);
         meta.setGlowing(options.glow());
@@ -174,11 +199,23 @@ public abstract class AbstractBlockDisplayEffect {
         meta.setShadowRadius(0.0F);
         meta.setShadowStrength(0.0F);
         meta.setScale(new Vector3f(options.scale(), options.scale(), options.scale()));
-        meta.setTranslation(new Vector3f(options.translation(), options.translation(), options.translation()));
+        org.joml.Vector3f appliedTranslation = translation == null
+                ? getRotatedBaseTranslation(rotation)
+                : translation;
+        meta.setTranslation(new Vector3f(appliedTranslation.x, appliedTranslation.y, appliedTranslation.z));
         meta.setBlockState(blockState);
         if (rotation != null) {
             meta.setLeftRotation(new Quaternion4f(rotation.x, rotation.y, rotation.z, rotation.w));
         }
+    }
+
+    protected org.joml.Vector3f getRotatedBaseTranslation(Quaternionf rotation) {
+        org.joml.Vector3f translation = new org.joml.Vector3f(
+                options.translation(), options.translation(), options.translation());
+        if (rotation != null) {
+            rotation.transform(translation);
+        }
+        return translation;
     }
 
     public record DisplayBlock(int x, int y, int z, BlockData blockData) {
@@ -192,7 +229,7 @@ public abstract class AbstractBlockDisplayEffect {
         }
     }
 
-    protected record DisplayEntity(DisplayBlock block, WrapperEntity entity) {
+    protected record DisplayEntity(DisplayBlock block, WrappedBlockState blockState, WrapperEntity entity) {
 
     }
 

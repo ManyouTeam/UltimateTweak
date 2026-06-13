@@ -51,6 +51,10 @@ public class DynamicLightConfig extends AbstractTweakConfig {
         return Math.max(1, getInt("check-interval-ticks", 2));
     }
 
+    public int getViewDistance() {
+        return Math.max(0, getInt("view-distance", 64));
+    }
+
     public record LightRule(ConfigurationSection matchItem, int lightLevel) {
     }
 }

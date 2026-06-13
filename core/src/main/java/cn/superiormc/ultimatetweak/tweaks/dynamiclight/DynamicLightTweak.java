@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.dynamiclight;
 
+import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.MatchItemManager;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
@@ -19,7 +20,6 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.EnumSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -38,6 +38,10 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
     };
 
     private final Map<UUID, LightSource> activeLights = new ConcurrentHashMap<>();
+
+    private volatile Map<LightLocation, Integer> activeLightLevels = Map.of();
+
+    private final Map<UUID, Map<LightLocation, Integer>> visibleLights = new ConcurrentHashMap<>();
 
     private SchedulerUtil task;
 
@@ -71,16 +75,13 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
 
     @Override
     public void onPlayerJoin(PlayerJoinEvent event) {
-        SchedulerUtil.runSync(event.getPlayer(), () -> {
-            for (Map.Entry<LightLocation, Integer> light : getActiveLightLevels().entrySet()) {
-                sendLight(event.getPlayer(), light.getKey(), light.getValue());
-            }
-        });
+        SchedulerUtil.runSync(event.getPlayer(), () -> updatePlayer(event.getPlayer()));
     }
 
     @Override
     public void onPlayerQuit(PlayerQuitEvent event) {
         removePlayerLight(event.getPlayer().getUniqueId());
+        visibleLights.remove(event.getPlayer().getUniqueId());
     }
 
     private void startTask() {
@@ -96,22 +97,34 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
             task.cancel();
             task = null;
         }
-        Set<LightLocation> locations = getActiveLightLevels().keySet();
         synchronized (activeLights) {
             activeLights.clear();
+            activeLightLevels = Map.of();
         }
-        for (LightLocation location : locations) {
-            broadcastRestore(location);
+        for (Map.Entry<UUID, Map<LightLocation, Integer>> entry : visibleLights.entrySet()) {
+            Player player = Bukkit.getPlayer(entry.getKey());
+            if (player == null) {
+                continue;
+            }
+            Set<LightLocation> locations = Set.copyOf(entry.getValue().keySet());
+            SchedulerUtil.runSync(player, () -> locations.forEach(location -> restoreRealBlock(player, location)));
         }
+        visibleLights.clear();
     }
 
     private void tick() {
-        for (Map.Entry<LightLocation, Integer> light : getActiveLightLevels().entrySet()) {
-            broadcastLight(light.getKey(), light.getValue());
-        }
         for (Player player : Bukkit.getOnlinePlayers()) {
-            SchedulerUtil.runSync(player, () -> updateLight(player));
+            if (UltimateTweak.isFolia) {
+                SchedulerUtil.runSync(player, () -> updatePlayer(player));
+            } else {
+                updatePlayer(player);
+            }
         }
+    }
+
+    private void updatePlayer(Player player) {
+        updateLight(player);
+        syncViewerLights(player);
     }
 
     private void updateLight(Player player) {
@@ -123,99 +136,41 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
         int lightLevel = getLightLevel(player);
         Block target = lightLevel > 0 ? getTargetBlock(player) : null;
         LightSource desired = target == null ? null : new LightSource(LightLocation.of(target), lightLevel);
-        Set<LightLocation> affected = new LinkedHashSet<>();
-        Map<LightLocation, Integer> before = new LinkedHashMap<>();
-        Map<LightLocation, Integer> after = new LinkedHashMap<>();
 
         synchronized (activeLights) {
             LightSource current = activeLights.get(player.getUniqueId());
             if (Objects.equals(current, desired)) {
                 return;
             }
-            if (current != null) {
-                affected.add(current.location());
-            }
-            if (desired != null) {
-                affected.add(desired.location());
-            }
-            for (LightLocation location : affected) {
-                before.put(location, getLightLevelAtLocked(location));
-            }
             if (desired == null) {
                 activeLights.remove(player.getUniqueId());
             } else {
                 activeLights.put(player.getUniqueId(), desired);
             }
-            for (LightLocation location : affected) {
-                after.put(location, getLightLevelAtLocked(location));
+            if (getConfig().getViewDistance() > 0) {
+                rebuildActiveLightLevelsLocked();
             }
         }
-        publishChanges(affected, before, after);
     }
 
     private void removePlayerLight(UUID playerId) {
-        LightLocation location;
-        int before;
-        int after;
         synchronized (activeLights) {
-            LightSource current = activeLights.get(playerId);
-            if (current == null) {
-                return;
-            }
-            location = current.location();
-            before = getLightLevelAtLocked(location);
-            activeLights.remove(playerId);
-            after = getLightLevelAtLocked(location);
-        }
-        if (before != after) {
-            if (after > 0) {
-                broadcastLight(location, after);
-            } else {
-                broadcastRestore(location);
+            if (activeLights.remove(playerId) != null && getConfig().getViewDistance() > 0) {
+                rebuildActiveLightLevelsLocked();
             }
         }
     }
 
     private Map<LightLocation, Integer> getActiveLightLevels() {
-        synchronized (activeLights) {
-            Map<LightLocation, Integer> result = new LinkedHashMap<>();
-            for (LightSource light : activeLights.values()) {
-                result.merge(light.location(), light.level(), Math::max);
-            }
-            return result;
-        }
+        return activeLightLevels;
     }
 
-    private int getLightLevelAtLocked(LightLocation location) {
-        int result = 0;
+    private void rebuildActiveLightLevelsLocked() {
+        Map<LightLocation, Integer> result = new LinkedHashMap<>();
         for (LightSource light : activeLights.values()) {
-            if (light.location().equals(location)) {
-                result = Math.max(result, light.level());
-            }
+            result.merge(light.location(), light.level(), Math::max);
         }
-        return result;
-    }
-
-    private void publishChanges(Set<LightLocation> affected, Map<LightLocation, Integer> before,
-                                Map<LightLocation, Integer> after) {
-        for (LightLocation location : affected) {
-            int previous = before.get(location);
-            int current = after.get(location);
-            if (previous == current) {
-                continue;
-            }
-            if (current > 0) {
-                broadcastLight(location, current);
-            } else {
-                broadcastRestore(location);
-            }
-        }
-    }
-
-    private void broadcastLight(LightLocation location, int level) {
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            SchedulerUtil.runSync(viewer, () -> sendLight(viewer, location, level));
-        }
+        activeLightLevels = Map.copyOf(result);
     }
 
     private void sendLight(Player viewer, LightLocation location, int level) {
@@ -263,21 +218,52 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
         return level;
     }
 
-    private void broadcastRestore(LightLocation location) {
-        for (Player viewer : Bukkit.getOnlinePlayers()) {
-            SchedulerUtil.runSync(viewer, () -> restoreBlock(viewer, location));
+    private void syncViewerLights(Player player) {
+        Map<LightLocation, Integer> desired = new LinkedHashMap<>();
+        if (getConfig().getViewDistance() == 0) {
+            LightSource ownLight = activeLights.get(player.getUniqueId());
+            if (ownLight != null) {
+                desired.put(ownLight.location(), ownLight.level());
+            }
+        } else {
+            for (Map.Entry<LightLocation, Integer> entry : getActiveLightLevels().entrySet()) {
+                if (isVisibleTo(player, entry.getKey())) {
+                    desired.put(entry.getKey(), entry.getValue());
+                }
+            }
+        }
+
+        Map<LightLocation, Integer> previous = visibleLights.getOrDefault(player.getUniqueId(), Map.of());
+        for (LightLocation location : previous.keySet()) {
+            if (!desired.containsKey(location)) {
+                restoreRealBlock(player, location);
+            }
+        }
+        for (Map.Entry<LightLocation, Integer> entry : desired.entrySet()) {
+            if (!Objects.equals(previous.get(entry.getKey()), entry.getValue())) {
+                sendLight(player, entry.getKey(), entry.getValue());
+            }
+        }
+        if (desired.isEmpty()) {
+            visibleLights.remove(player.getUniqueId());
+        } else {
+            visibleLights.put(player.getUniqueId(), Map.copyOf(desired));
         }
     }
 
-    private void restoreBlock(Player player, LightLocation location) {
-        int level;
-        synchronized (activeLights) {
-            level = getLightLevelAtLocked(location);
+    private boolean isVisibleTo(Player player, LightLocation location) {
+        World world = Bukkit.getWorld(location.worldId());
+        if (world == null || !player.isOnline() || !player.getWorld().equals(world)) {
+            return false;
         }
-        if (level > 0) {
-            sendLight(player, location, level);
-            return;
-        }
+        double viewDistance = getConfig().getViewDistance();
+        double dx = player.getLocation().getX() - (location.x() + 0.5);
+        double dy = player.getLocation().getY() - (location.y() + 0.5);
+        double dz = player.getLocation().getZ() - (location.z() + 0.5);
+        return dx * dx + dy * dy + dz * dz <= viewDistance * viewDistance;
+    }
+
+    private void restoreRealBlock(Player player, LightLocation location) {
         World world = Bukkit.getWorld(location.worldId());
         if (world == null || !player.getWorld().equals(world)) {
             return;

@@ -1,5 +1,12 @@
 enabled: true
 
+# Minimum interval between multiblock detections for the same player.
+cooldown-ticks: 5
+
+# Maximum number of blocks broken in the same tick.
+# Set smaller value if you are running large servers.
+blocks-per-tick: 32
+
 require-shift: true
 
 rules:

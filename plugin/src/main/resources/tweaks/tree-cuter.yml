@@ -1,7 +1,11 @@
 enabled: true
 
-# Minimum interval between tree detections for the same player.
-cooldown-tick: 5
+# Minimum interval between multiblock detections for the same player.
+cooldown-ticks: 5
+
+# Maximum number of blocks broken in the same tick.
+# Set smaller value if you are running large servers.
+blocks-per-tick: 32
 
 require-shift: false
 
@@ -14,6 +18,7 @@ match-item:
       - 'custom:tree_shears'
 
 animation:
+  # If this lag your server, try to disable it.
   enabled: true
   # random, same-as-player, away-from-player
   direction: random
@@ -22,6 +27,7 @@ animation:
   duration-ticks: 30
   interval-ticks: 1
   view-distance: 24
+  # Will cost extra server performance.
   fall-damage:
     enabled: false
     players: true
@@ -29,6 +35,7 @@ animation:
     damage: 6.0
     min-angle: 15.0
     hit-radius: 0.5
+    check-interval-ticks: 2
 
 damage-glow:
   enabled: true

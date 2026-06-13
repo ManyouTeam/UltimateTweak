@@ -39,10 +39,6 @@ public class TreeCutterConfig extends AbstractMultiBlockConfig {
         return getBoolean("animation.glow", false);
     }
 
-    public int getCooldownTicks() {
-        return Math.max(0, getInt("cooldown-tick", 5));
-    }
-
     public int getAnimationGlowColor() {
         return getGlowColor("animation.glow-color", "#FFFFFF");
     }
@@ -85,6 +81,10 @@ public class TreeCutterConfig extends AbstractMultiBlockConfig {
 
     public double getFallDamageHitRadius() {
         return Math.max(0.0, getDouble("animation.fall-damage.hit-radius", 0.5));
+    }
+
+    public int getFallDamageCheckIntervalTicks() {
+        return Math.max(1, getInt("animation.fall-damage.check-interval-ticks", 2));
     }
 
     @Override
