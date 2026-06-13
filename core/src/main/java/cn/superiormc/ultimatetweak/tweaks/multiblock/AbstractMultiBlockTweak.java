@@ -139,7 +139,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
                 session = candidate;
             }
         }
-        if (session == null) {
+        if (session == null || session.breaking) {
             return;
         }
         session.clearMiningSlowdown();
@@ -283,25 +283,32 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         SchedulerUtil[] task = new SchedulerUtil[1];
         session.breaking = true;
         task[0] = SchedulerUtil.runTaskTimer(player, () -> {
-            if (!player.isOnline()) {
+            try {
+                if (!player.isOnline()) {
+                    task[0].cancel();
+                    session.breakTask = null;
+                    removeSession(session);
+                    return;
+                }
+
+                int end = Math.min(index[0] + blocksPerTick, blocks.size());
+                while (index[0] < end) {
+                    Block block = blocks.get(index[0]++);
+                    if (!breakBlock(player, session, block, breakNaturally.test(block)) && onFailure != null) {
+                        onFailure.accept(block);
+                    }
+                }
+
+                if (index[0] >= blocks.size()) {
+                    task[0].cancel();
+                    session.breakTask = null;
+                    onComplete.run();
+                }
+            } catch (Throwable throwable) {
                 task[0].cancel();
                 session.breakTask = null;
                 removeSession(session);
-                return;
-            }
-
-            int end = Math.min(index[0] + blocksPerTick, blocks.size());
-            while (index[0] < end) {
-                Block block = blocks.get(index[0]++);
-                if (!breakBlock(player, session, block, breakNaturally.test(block)) && onFailure != null) {
-                    onFailure.accept(block);
-                }
-            }
-
-            if (index[0] >= blocks.size()) {
-                task[0].cancel();
-                session.breakTask = null;
-                onComplete.run();
+                throw throwable;
             }
         }, 1L, 1L);
         session.breakTask = task[0];

@@ -39,6 +39,6 @@ public class BestToolConfig extends AbstractTweakConfig {
     }
 
     public int getCooldownTicks() {
-        return Math.max(0, getInt("cooldown-tick", 5));
+        return Math.max(0, getInt("cooldown-ticks", 5));
     }
 }
