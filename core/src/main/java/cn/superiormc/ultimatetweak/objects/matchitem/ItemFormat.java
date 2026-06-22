@@ -1,7 +1,6 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
 import cn.superiormc.ultimatetweak.methods.DebuildItem;
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.MemorySection;
@@ -9,6 +8,7 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Map;
+import java.util.Objects;
 
 public class ItemFormat extends AbstractMatchItemRule {
 
@@ -19,7 +19,7 @@ public class ItemFormat extends AbstractMatchItemRule {
     @Override
     public boolean getMatch(ConfigurationSection section, ItemStack item, ItemMeta meta) {
         Map<String, Object> item1Result = DebuildItem.debuildItem(item, new MemoryConfiguration()).getValues(true);
-        Map<String, Object> item2Result = section.getConfigurationSection("item-format").getValues(true);
+        Map<String, Object> item2Result = Objects.requireNonNull(section.getConfigurationSection("item-format")).getValues(true);
         if (section.getBoolean("item-format-settings.require-same-key")) {
             for (String key : item1Result.keySet()) {
                 if (canIgnore(key, section)) {
@@ -42,8 +42,7 @@ public class ItemFormat extends AbstractMatchItemRule {
                 continue;
             }
             if (!object.equals(item2Result.get(key))) {
-                if (object instanceof String && item2Result.get(key) instanceof String) {
-                    String tempVal1 = (String) object;
+                if (object instanceof String tempVal1 && item2Result.get(key) instanceof String) {
                     String tempVal2 = (String) item2Result.get(key);
                     if (tempVal1.equalsIgnoreCase(tempVal2)) {
                         continue;

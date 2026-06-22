@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
@@ -17,11 +16,9 @@ public class HasStoredEnchants extends AbstractMatchItemRule {
 
     @Override
     public boolean getMatch(ConfigurationSection section, ItemStack item, ItemMeta meta) {
-        if (!(meta instanceof EnchantmentStorageMeta)) {
+        if (!(meta instanceof EnchantmentStorageMeta storageMeta)) {
             return false; // 不是附魔书直接返回 false
         }
-
-        EnchantmentStorageMeta storageMeta = (EnchantmentStorageMeta) meta;
 
         for (String ench : section.getStringList("has-stored-enchants")) {
             if (ench.equals("*")) {

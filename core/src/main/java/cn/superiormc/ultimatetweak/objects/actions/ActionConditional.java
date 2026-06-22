@@ -28,6 +28,6 @@ public class ActionConditional extends AbstractRunAction {
             return;
         }
         ObjectAction action = new ObjectAction(actionSection);
-        action.runAllActions(player);
+        action.runAllActions(player, singleAction.getActiveArgs());
     }
 }

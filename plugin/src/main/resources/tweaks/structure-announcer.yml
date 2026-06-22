@@ -1,0 +1,75 @@
+enabled: true
+
+# Empty list means all structures.
+# Supports names like village_plains or minecraft:village_plains.
+structures: []
+
+# How often players' current structures are checked.
+check-interval-ticks: 20
+
+# All conditions must pass before sending the structure enter message.
+conditions: []
+
+# Default message.
+message: "[title]&e{lang:structure-announcer}[/title]"
+
+# Executed after entering a structure.
+# You can use {structure}, {from-structure}, and {to-structure} in action strings.
+structure-enter-actions:
+  1:
+    type: sound
+    sound: entity.experience_orb.pickup
+    volume: 1.0
+    pitch: 1.2
+
+# Optional per-structure messages. These override message above.
+structure-messages:
+  ancient_city: "[title]&e{lang:structure-announcer-ancient-city}[/title]"
+  bastion_remnant: "[title]&e{lang:structure-announcer-bastion-remnant}[/title]"
+  buried_treasure: "[title]&e{lang:structure-announcer-buried-treasure}[/title]"
+  "terralith:desert_outpost": "[title]&e{lang:structure-announcer-desert-outpost}[/title]"
+  desert_pyramid: "[title]&e{lang:structure-announcer-desert-pyramid}[/title]"
+  end_city: "[title]&e{lang:structure-announcer-end-city}[/title]"
+  "terralith:fortified_desert_village": "[title]&e{lang:structure-announcer-fortified-desert-village}[/title]"
+  "terralith:fortified_village": "[title]&e{lang:structure-announcer-fortified-village}[/title]"
+  fortress: "[title]&e{lang:structure-announcer-fortress}[/title]"
+  "terralith:frosted_dungeon": "[title]&e{lang:structure-announcer-frosted-dungeon}[/title]"
+  "terralith:giant_bee_hive": "[title]&e{lang:structure-announcer-giant-bee-hive}[/title]"
+  "terralith:glacial_hut": "[title]&e{lang:structure-announcer-glacial-hut}[/title]"
+  igloo: "[title]&e{lang:structure-announcer-igloo}[/title]"
+  jungle_pyramid: "[title]&e{lang:structure-announcer-jungle-pyramid}[/title]"
+  "terralith:mage_complex": "[title]&e{lang:structure-announcer-mage-complex}[/title]"
+  "terralith:mage_tower": "[title]&e{lang:structure-announcer-mage-tower}[/title]"
+  "terralith:mage_tower_autumn": "[title]&e{lang:structure-announcer-mage-tower-autumn}[/title]"
+  "terralith:mage_tower_spring": "[title]&e{lang:structure-announcer-mage-tower-spring}[/title]"
+  "terralith:mage_tower_summer": "[title]&e{lang:structure-announcer-mage-tower-summer}[/title]"
+  "terralith:mage_tower_winter": "[title]&e{lang:structure-announcer-mage-tower-winter}[/title]"
+  mansion: "[title]&e{lang:structure-announcer-mansion}[/title]"
+  "terralith:mining_outpost": "[title]&e{lang:structure-announcer-mining-outpost}[/title]"
+  mineshaft: "[title]&e{lang:structure-announcer-mineshaft}[/title]"
+  monument: "[title]&e{lang:structure-announcer-monument}[/title]"
+  "terralith:oak_cabin": "[title]&e{lang:structure-announcer-oak-cabin}[/title]"
+  "terralith:old_refinery": "[title]&e{lang:structure-announcer-old-refinery}[/title]"
+  pillager_outpost: "[title]&e{lang:structure-announcer-pillager-outpost}[/title]"
+  "terralith:rubble_desert": "[title]&e{lang:structure-announcer-rubble-desert}[/title]"
+  "terralith:rubble_forest": "[title]&e{lang:structure-announcer-rubble-forest}[/title]"
+  "terralith:rubble_jungle": "[title]&e{lang:structure-announcer-rubble-jungle}[/title]"
+  "terralith:rubble_mesa": "[title]&e{lang:structure-announcer-rubble-mesa}[/title]"
+  "terralith:rubble_mountain": "[title]&e{lang:structure-announcer-rubble-mountain}[/title]"
+  "terralith:rubble_taiga": "[title]&e{lang:structure-announcer-rubble-taiga}[/title]"
+  ruined_portal: "[title]&e{lang:structure-announcer-ruined-portal}[/title]"
+  shipwreck: "[title]&e{lang:structure-announcer-shipwreck}[/title]"
+  "terralith:spire": "[title]&e{lang:structure-announcer-spire}[/title]"
+  stronghold: "[title]&e{lang:structure-announcer-stronghold}[/title]"
+  "terralith:sunken_tower": "[title]&e{lang:structure-announcer-sunken-tower}[/title]"
+  swamp_hut: "[title]&e{lang:structure-announcer-swamp-hut}[/title]"
+  trail_ruins: "[title]&e{lang:structure-announcer-trail-ruins}[/title]"
+  trial_chambers: "[title]&e{lang:structure-announcer-trial-chambers}[/title]"
+  "terralith:underground_cabin": "[title]&e{lang:structure-announcer-underground-cabin}[/title]"
+  "terralith:valley_lodge": "[title]&e{lang:structure-announcer-valley-lodge}[/title]"
+  village_desert: "[title]&e{lang:structure-announcer-village-desert}[/title]"
+  village_plains: "[title]&e{lang:structure-announcer-village-plains}[/title]"
+  village_savanna: "[title]&e{lang:structure-announcer-village-savanna}[/title]"
+  village_snowy: "[title]&e{lang:structure-announcer-village-snowy}[/title]"
+  village_taiga: "[title]&e{lang:structure-announcer-village-taiga}[/title]"
+  "terralith:witch_hut": "[title]&e{lang:structure-announcer-witch-hut}[/title]"

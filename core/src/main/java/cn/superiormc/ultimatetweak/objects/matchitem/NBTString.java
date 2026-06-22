@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import de.tr7zw.nbtapi.NBTCompound;
 import de.tr7zw.nbtapi.NBTItem;
 import de.tr7zw.nbtapi.NBTType;

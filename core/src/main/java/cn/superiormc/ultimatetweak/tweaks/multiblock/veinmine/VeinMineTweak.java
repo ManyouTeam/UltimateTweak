@@ -78,7 +78,8 @@ public class VeinMineTweak extends AbstractMultiBlockTweak<VeinMineConfig, VeinM
         }
         Set<LocationKey> dropKeys = new HashSet<>();
         prepareDefaultDrops(session, blocks, dropKeys);
-        getConfig().getBreakActions().runAllActions(player);
+        getConfig().getBreakActions().runAllActions(player,
+                getActionArgs(session.data(), blocks, blocks.size()));
         breakBlocksInBatches(player, session, blocks, block -> false,
                 block -> dropKeys.remove(LocationKey.of(block)),
                 () -> finish(session, player, dropKeys));
@@ -122,6 +123,15 @@ public class VeinMineTweak extends AbstractMultiBlockTweak<VeinMineConfig, VeinM
     }
 
     protected record VeinData(String blockId, List<LocationKey> blocks) {
+    }
+
+    @Override
+    protected String[] getActionArgs(VeinData data, List<Block> blocks, int miningBlockCount) {
+        return new String[] {
+                "block", data.blockId(),
+                "block-amount", String.valueOf(blocks.size()),
+                "mining-block-amount", String.valueOf(miningBlockCount)
+        };
     }
 
     private record VeinKey(UUID worldId, int x, int y, int z) {

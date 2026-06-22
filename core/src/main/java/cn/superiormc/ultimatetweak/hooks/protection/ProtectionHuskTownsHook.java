@@ -17,4 +17,10 @@ public class ProtectionHuskTownsHook extends AbstractProtectionHook {
     public boolean canUse(Player player, Location location) {
         return api.isOperationAllowed(api.getOnlineUser(player.getUniqueId()), OperationType.BLOCK_BREAK, api.getPosition(location));
     }
+
+    @Override
+    public ProtectionRegionResult createRegion(ProtectionRegion region) {
+        return ProtectionRegionResult.unsupported(getPluginName());
+    }
+
 }

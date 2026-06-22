@@ -28,6 +28,9 @@ public class InitManager {
         resourceOutput("tweaks/vein-mine.yml", true);
         resourceOutput("tweaks/entity-vehicle-restriction.yml", true);
         resourceOutput("tweaks/dynamic-light.yml", true);
+        resourceOutput("tweaks/biome-announcer.yml", true);
+        resourceOutput("tweaks/structure-announcer.yml", true);
+        resourceOutput("tweaks/structure-auto-protect.yml", true);
         resourceOutput("tree_determine_settings/oak.yml", true);
         resourceOutput("tree_determine_settings/spruce.yml", true);
         resourceOutput("tree_determine_settings/birch.yml", true);

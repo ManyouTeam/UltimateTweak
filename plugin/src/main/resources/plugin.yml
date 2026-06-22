@@ -5,6 +5,18 @@ api-version: '1.21.3'
 folia-supported: true
 author: PQguanfang
 softdepend:
+  # Protection
+  - WorldGuard
+  - Towny
+  - Dominion
+  - Lands
+  - PlotSquared
+  - BentoBox
+  - Residence
+  - GriefPrevention
+  - HuskTowns
+  - HuskClaims
+  - SuperiorSkyblock2
   # Item
   - MMOItems
   - ItemsAdder

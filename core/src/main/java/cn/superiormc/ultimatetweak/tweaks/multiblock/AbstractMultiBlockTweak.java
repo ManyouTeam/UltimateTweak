@@ -111,7 +111,8 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         MultiBlockSession session = lockOwner == null ? newSession : lockOwner;
         session.applyMiningSlowdown();
         session.applyGlow();
-        getConfig().getDamageActions().runAllActions(player);
+        getConfig().getDamageActions().runAllActions(player,
+                getActionArgs(detection.data(), detection.blocks(), detection.miningBlockCount()));
     }
 
     @Override
@@ -210,6 +211,13 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
     protected abstract boolean isStillValid(D data, List<Block> currentBlocks);
 
     protected abstract void breakBlocks(Player player, MultiBlockSession session, List<Block> blocks);
+
+    protected String[] getActionArgs(D data, List<Block> blocks, int miningBlockCount) {
+        return new String[] {
+                "block-amount", String.valueOf(blocks.size()),
+                "mining-block-amount", String.valueOf(miningBlockCount)
+        };
+    }
 
     protected Location getGlowCenter(D data, Block breakingBlock) {
         return breakingBlock.getLocation().add(0.5, 0.5, 0.5);

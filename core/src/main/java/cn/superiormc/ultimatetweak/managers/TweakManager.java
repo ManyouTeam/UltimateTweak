@@ -3,12 +3,18 @@ package cn.superiormc.ultimatetweak.managers;
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.besttool.BestToolTweak;
+import cn.superiormc.ultimatetweak.tweaks.biomeannouncer.BiomeAnnouncerTweak;
 import cn.superiormc.ultimatetweak.tweaks.dynamiclight.DynamicLightTweak;
 import cn.superiormc.ultimatetweak.tweaks.entityvehiclerestriction.EntityVehicleRestrictionTweak;
 import cn.superiormc.ultimatetweak.tweaks.multiblock.treecutter.TreeCutterTweak;
+import cn.superiormc.ultimatetweak.tweaks.structureautoprotect.StructureAutoProtectTweak;
+import cn.superiormc.ultimatetweak.tweaks.structureannouncer.StructureAnnouncerTweak;
 import cn.superiormc.ultimatetweak.tweaks.treereplant.TreeReplantTweak;
 import cn.superiormc.ultimatetweak.tweaks.multiblock.veinmine.VeinMineTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
+import cn.superiormc.ultimatetweak.tweaks.config.BiomeAnnouncerConfig;
+import cn.superiormc.ultimatetweak.tweaks.config.StructureAnnouncerConfig;
+import cn.superiormc.ultimatetweak.tweaks.config.StructureAutoProtectConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.TreeCutterConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.BestToolConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.DynamicLightConfig;
@@ -59,6 +65,9 @@ public class TweakManager {
         registerTweak(new EntityVehicleRestrictionTweak(
                 new EntityVehicleRestrictionConfig(new File(dir, "entity-vehicle-restriction.yml"))));
         registerTweak(new DynamicLightTweak(new DynamicLightConfig(new File(dir, "dynamic-light.yml"))));
+        registerTweak(new BiomeAnnouncerTweak(new BiomeAnnouncerConfig(new File(dir, "biome-announcer.yml"))));
+        registerTweak(new StructureAnnouncerTweak(new StructureAnnouncerConfig(new File(dir, "structure-announcer.yml"))));
+        registerTweak(new StructureAutoProtectTweak(new StructureAutoProtectConfig(new File(dir, "structure-auto-protect.yml"))));
     }
 
     private void registerTweak(AbstractTweak<?> tweak) {

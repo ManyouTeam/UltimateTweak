@@ -50,10 +50,23 @@ public class ObjectAction {
         }
     }
 
+    public void runAllActions(Player player, String... args) {
+        for (ObjectSingleAction singleAction : everyActions) {
+            singleAction.doAction(player, args);
+        }
+    }
+
     public void runRandomEveryActions(Player player, int x) {
         Collections.shuffle(everyActions);  // 随机打乱动作顺序
         for (int i = 0; i < Math.min(x, everyActions.size()); i++) {
             everyActions.get(i).doAction(player);  // 执行 x 个随机动作
+        }
+    }
+
+    public void runRandomEveryActions(Player player, int x, String... args) {
+        Collections.shuffle(everyActions);
+        for (int i = 0; i < Math.min(x, everyActions.size()); i++) {
+            everyActions.get(i).doAction(player, args);
         }
     }
 

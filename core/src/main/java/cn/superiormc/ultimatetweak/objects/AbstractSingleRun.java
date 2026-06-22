@@ -35,7 +35,15 @@ public abstract class AbstractSingleRun {
                 "player-pitch", String.valueOf(player.getLocation().getPitch()),
                 "player-yaw", String.valueOf(player.getLocation().getYaw()),
                 "player", player.getName());
+        String[] extraArgs = getExtraArgs();
+        if (extraArgs.length > 0) {
+            content = CommonUtil.modifyString(player, content, extraArgs);
+        }
         return content;
+    }
+
+    protected String[] getExtraArgs() {
+        return new String[0];
     }
 
     public String getString(String path) {

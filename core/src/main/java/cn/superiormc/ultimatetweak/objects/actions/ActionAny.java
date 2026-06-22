@@ -19,6 +19,6 @@ public class ActionAny extends AbstractRunAction {
             return;
         }
         ObjectAction action = new ObjectAction(chanceSection);
-        action.runRandomEveryActions(player, singleAction.getInt("amount", 1));
+        action.runRandomEveryActions(player, singleAction.getInt("amount", 1), singleAction.getActiveArgs());
     }
 }

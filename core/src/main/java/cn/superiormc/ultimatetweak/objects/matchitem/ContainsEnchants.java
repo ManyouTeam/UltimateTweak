@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import org.bukkit.Registry;
 import org.bukkit.configuration.ConfigurationSection;
@@ -24,8 +23,7 @@ public class ContainsEnchants extends AbstractMatchItemRule {
                 continue;
             }
             int level;
-            if (meta instanceof EnchantmentStorageMeta) {
-                EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) meta;
+            if (meta instanceof EnchantmentStorageMeta enchantmentStorageMeta) {
                 level = enchantmentStorageMeta.getStoredEnchantLevel(vanillaEnchant);
             } else {
                 level = meta.getEnchantLevel(vanillaEnchant);

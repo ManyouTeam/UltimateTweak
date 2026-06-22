@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;

@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.objects.matchitem;
 
-import cn.superiormc.ultimatetweak.objects.matchitem.AbstractMatchItemRule;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -15,8 +14,7 @@ public class ContainsEnchantsAmount extends AbstractMatchItemRule {
     @Override
     public boolean getMatch(ConfigurationSection section, ItemStack item, ItemMeta meta) {
         int size;
-        if (meta instanceof EnchantmentStorageMeta) {
-            EnchantmentStorageMeta enchantmentStorageMeta = (EnchantmentStorageMeta) meta;
+        if (meta instanceof EnchantmentStorageMeta enchantmentStorageMeta) {
             size = enchantmentStorageMeta.getStoredEnchants().size();
         } else {
             size = meta.getEnchants().size();

@@ -102,7 +102,8 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
             }
         }
 
-        getConfig().getBreakActions().runAllActions(player);
+        getConfig().getBreakActions().runAllActions(player,
+                getActionArgs(result, blocks, result.logAmount()));
         TreeBlockDisplayAnimation.AnimationSession finalAnimationSession = animationSession;
         Runnable afterBreak = () -> {
             Runnable finish = () -> finish(session, player, dropKeys);
@@ -128,5 +129,17 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
                     lowestLog.getWorldY(result.snapshot()),
                     lowestLog.getWorldZ(result.snapshot()));
         }
+    }
+
+    @Override
+    protected String[] getActionArgs(TreeDetectionResult result, List<Block> blocks, int miningBlockCount) {
+        return new String[] {
+                "block-amount", String.valueOf(blocks.size()),
+                "mining-block-amount", String.valueOf(miningBlockCount),
+                "tree-amount", String.valueOf(result.treeBlocks().size()),
+                "log-amount", String.valueOf(result.logAmount()),
+                "leaf-amount", String.valueOf(result.leafAmount()),
+                "tree-id", result.treeDefinition().getId()
+        };
     }
 }

@@ -12,4 +12,10 @@ public abstract class AbstractProtectionHook {
     }
 
     public abstract boolean canUse(Player player, Location location);
+
+    public abstract ProtectionRegionResult createRegion(ProtectionRegion region);
+
+    public String getPluginName() {
+        return pluginName;
+    }
 }

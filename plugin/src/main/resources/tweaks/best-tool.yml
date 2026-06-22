@@ -1,10 +1,11 @@
 enabled: true
 
 # hotbar: search slots 0-8; inventory: search the entire player storage inventory.
+# Please note that use inventory mode will cost ~x5 extra performance, don't recommended to use it.
 search-scope: hotbar
 
 # Minimum interval between detections for the same player.
-cooldown-tick: 5
+cooldown-ticks: 5
 
 # Candidate score:
 # block destroy speed (including efficiency) * multiplier ^ fortune level

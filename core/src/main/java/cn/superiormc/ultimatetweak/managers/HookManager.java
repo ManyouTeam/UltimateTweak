@@ -15,6 +15,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -215,6 +216,18 @@ public class HookManager {
             }
         }
         return true;
+    }
+
+    public ProtectionRegionResult createProtectionRegion(String pluginName, ProtectionRegion region) {
+        AbstractProtectionHook protectionHook = protectionHooks.get(pluginName);
+        if (protectionHook == null) {
+            return ProtectionRegionResult.failed("Protection hook is not loaded: " + pluginName);
+        }
+        return protectionHook.createRegion(region);
+    }
+
+    public Collection<String> getLoadedProtectionHookNames() {
+        return Collections.unmodifiableCollection(protectionHooks.keySet());
     }
 
     public AbstractBlockHook getSuitableChecker(String materialString) {

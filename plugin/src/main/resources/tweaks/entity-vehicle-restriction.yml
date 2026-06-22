@@ -6,3 +6,5 @@ vehicles:
   - minecart
 
 # Omit match-entity to match all living entities.
+# match-entity:
+#   entity-types:

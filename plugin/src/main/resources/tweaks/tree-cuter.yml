@@ -58,5 +58,8 @@ break-actions:
     sound: entity.zombie.break_wooden_door
     volume: 1.0
     pitch: 1.0
+  2:
+    type: action_bar
+    message: "{lang:tree-cutter-break-summary}"
 
 conditions: []

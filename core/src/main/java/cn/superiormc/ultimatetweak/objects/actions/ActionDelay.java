@@ -3,8 +3,11 @@ package cn.superiormc.ultimatetweak.objects.actions;
 
 import cn.superiormc.ultimatetweak.objects.ObjectAction;
 import cn.superiormc.ultimatetweak.utils.SchedulerUtil;
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
+
+import java.util.UUID;
 
 public class ActionDelay extends AbstractRunAction {
 
@@ -21,6 +24,13 @@ public class ActionDelay extends AbstractRunAction {
         }
         long time = singleAction.getSection().getLong("time");
         ObjectAction action = new ObjectAction(chanceSection);
-        SchedulerUtil.runTaskLater(() -> action.runAllActions(player), time);
+        String[] args = singleAction.getActiveArgs();
+        UUID playerId = player.getUniqueId();
+        SchedulerUtil.runTaskLater(() -> {
+            Player onlinePlayer = Bukkit.getPlayer(playerId);
+            if (onlinePlayer != null && onlinePlayer.isOnline()) {
+                action.runAllActions(onlinePlayer, args);
+            }
+        }, time);
     }
 }
