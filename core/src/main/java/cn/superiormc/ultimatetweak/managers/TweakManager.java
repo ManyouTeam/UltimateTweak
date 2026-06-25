@@ -4,6 +4,7 @@ import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.besttool.BestToolTweak;
 import cn.superiormc.ultimatetweak.tweaks.biomeannouncer.BiomeAnnouncerTweak;
+import cn.superiormc.ultimatetweak.tweaks.doubledoor.DoubleDoorTweak;
 import cn.superiormc.ultimatetweak.tweaks.dynamiclight.DynamicLightTweak;
 import cn.superiormc.ultimatetweak.tweaks.entityvehiclerestriction.EntityVehicleRestrictionTweak;
 import cn.superiormc.ultimatetweak.tweaks.multiblock.treecutter.TreeCutterTweak;
@@ -17,6 +18,7 @@ import cn.superiormc.ultimatetweak.tweaks.config.StructureAnnouncerConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.StructureAutoProtectConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.TreeCutterConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.BestToolConfig;
+import cn.superiormc.ultimatetweak.tweaks.config.DoubleDoorConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.DynamicLightConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.EntityVehicleRestrictionConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.TreeReplantConfig;
@@ -59,6 +61,7 @@ public class TweakManager {
 
     private void registerDefaultTweaks(File dir) {
         registerTweak(new BestToolTweak(new BestToolConfig(new File(dir, "best-tool.yml"))));
+        registerTweak(new DoubleDoorTweak(new DoubleDoorConfig(new File(dir, "double-door.yml"))));
         registerTweak(new TreeCutterTweak(new TreeCutterConfig(new File(dir, "tree-cuter.yml"))));
         registerTweak(new TreeReplantTweak(new TreeReplantConfig(new File(dir, "tree-replant.yml"))));
         registerTweak(new VeinMineTweak(new VeinMineConfig(new File(dir, "vein-mine.yml"))));

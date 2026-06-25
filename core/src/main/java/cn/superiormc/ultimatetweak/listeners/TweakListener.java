@@ -58,7 +58,7 @@ public class TweakListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_INTERACT)) {
             TweakManager.tweakManager.call(tweak, () -> tweak.onPlayerInteract(event));

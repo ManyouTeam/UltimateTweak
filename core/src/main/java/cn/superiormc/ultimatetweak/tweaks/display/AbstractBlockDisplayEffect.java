@@ -112,6 +112,15 @@ public abstract class AbstractBlockDisplayEffect {
         }
     }
 
+    protected void updateDisplay(DisplayEntity displayEntity,
+                                 Quaternionf rotation,
+                                 org.joml.Vector3f translation) {
+        if (displayEntity == null) {
+            return;
+        }
+        updateMetadata(displayEntity.entity(), displayEntity.blockState(), rotation, translation);
+    }
+
     protected void teleport(DisplayEntity displayEntity, org.joml.Vector3f position) {
         if (displayEntity == null || displayEntity.entity() == null || position == null) {
             return;
@@ -247,6 +256,11 @@ public abstract class AbstractBlockDisplayEffect {
         public static DisplayOptions animated(boolean glow, int glowColor, int interpolationDuration) {
             // Slight overlap prevents visible seams between independently rotated block displays.
             return new DisplayOptions(glow, true, glowColor, 1.02F, -0.01F,
+                    Math.max(1, interpolationDuration));
+        }
+
+        public static DisplayOptions exactAnimated(boolean glow, int glowColor, int interpolationDuration) {
+            return new DisplayOptions(glow, true, glowColor, 1.0F, 0.0F,
                     Math.max(1, interpolationDuration));
         }
 

@@ -1,0 +1,10 @@
+enabled: true
+
+animation:
+  enabled: true
+  single-door: false
+  duration-ticks: 16
+  interval-ticks: 1
+  view-distance: 24
+
+conditions: []
