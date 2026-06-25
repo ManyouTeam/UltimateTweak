@@ -24,7 +24,6 @@ public class InitManager {
     public void init() {
         resourceOutput("tweaks/best-tool.yml", true);
         resourceOutput("tweaks/double-door.yml", true);
-        resourceOutput("tweaks/elevator.yml", true);
         resourceOutput("tweaks/tree-cuter.yml", true);
         resourceOutput("tweaks/tree-replant.yml", true);
         resourceOutput("tweaks/vein-mine.yml", true);
