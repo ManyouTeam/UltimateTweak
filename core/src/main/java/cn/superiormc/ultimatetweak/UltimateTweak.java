@@ -27,7 +27,6 @@ public final class UltimateTweak extends JavaPlugin {
     public void onEnable() {
         instance = this;
         try {
-            // Formats like "26.2.build.2605-experimental" contain non-numeric parts
             String[] versionParts = Bukkit.getBukkitVersion().split("-")[0].split("\\.");
             yearVersion = versionParts.length > 0 && versionParts[0].matches("\\d+") ? Integer.parseInt(versionParts[0]) : 1;
             majorVersion = versionParts.length > 1 && versionParts[1].matches("\\d+") ? Integer.parseInt(versionParts[1]) : 0;
@@ -41,7 +40,7 @@ public final class UltimateTweak extends JavaPlugin {
                 methodUtil = (SpecialMethodUtil) paperClass.getDeclaredConstructor().newInstance();
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...!");
             } catch (Throwable throwable) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
+                Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
         } else {
@@ -50,7 +49,7 @@ public final class UltimateTweak extends JavaPlugin {
                 methodUtil = (SpecialMethodUtil) spigotClass.getDeclaredConstructor().newInstance();
                 TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...!");
             } catch (Throwable throwable) {
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
+                Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
             }
         }
