@@ -3,6 +3,7 @@ package cn.superiormc.ultimatetweak.managers;
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.besttool.BestToolTweak;
+import cn.superiormc.ultimatetweak.tweaks.betterdropdisplay.BetterDropDisplayTweak;
 import cn.superiormc.ultimatetweak.tweaks.biomeannouncer.BiomeAnnouncerTweak;
 import cn.superiormc.ultimatetweak.tweaks.doubledoor.DoubleDoorTweak;
 import cn.superiormc.ultimatetweak.tweaks.dynamiclight.DynamicLightTweak;
@@ -14,6 +15,7 @@ import cn.superiormc.ultimatetweak.tweaks.treereplant.TreeReplantTweak;
 import cn.superiormc.ultimatetweak.tweaks.multiblock.veinmine.VeinMineTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
 import cn.superiormc.ultimatetweak.tweaks.config.BiomeAnnouncerConfig;
+import cn.superiormc.ultimatetweak.tweaks.config.BetterDropDisplayConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.StructureAnnouncerConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.StructureAutoProtectConfig;
 import cn.superiormc.ultimatetweak.tweaks.config.TreeCutterConfig;
@@ -31,6 +33,7 @@ import java.util.Collections;
 import java.util.EnumMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import org.bukkit.World;
 
 public class TweakManager {
 
@@ -38,8 +41,7 @@ public class TweakManager {
 
     private final Map<String, AbstractTweak<?>> tweakMap = new LinkedHashMap<>();
 
-    private final Map<TweakEventType, Collection<AbstractTweak<?>>> eventTweakMap =
-            new EnumMap<>(TweakEventType.class);
+    private final Map<TweakEventType, Collection<AbstractTweak<?>>> eventTweakMap = new EnumMap<>(TweakEventType.class);
 
     public TweakManager() {
         tweakManager = this;
@@ -61,12 +63,14 @@ public class TweakManager {
 
     private void registerDefaultTweaks(File dir) {
         registerTweak(new BestToolTweak(new BestToolConfig(new File(dir, "best-tool.yml"))));
+        if (UltimateTweak.isEntityLibAvailable()) {
+            registerTweak(new BetterDropDisplayTweak(new BetterDropDisplayConfig(new File(dir, "better-drop-display.yml"))));
+        }
         registerTweak(new DoubleDoorTweak(new DoubleDoorConfig(new File(dir, "double-door.yml"))));
         registerTweak(new TreeCutterTweak(new TreeCutterConfig(new File(dir, "tree-cuter.yml"))));
         registerTweak(new TreeReplantTweak(new TreeReplantConfig(new File(dir, "tree-replant.yml"))));
         registerTweak(new VeinMineTweak(new VeinMineConfig(new File(dir, "vein-mine.yml"))));
-        registerTweak(new EntityVehicleRestrictionTweak(
-                new EntityVehicleRestrictionConfig(new File(dir, "entity-vehicle-restriction.yml"))));
+        registerTweak(new EntityVehicleRestrictionTweak(new EntityVehicleRestrictionConfig(new File(dir, "entity-vehicle-restriction.yml"))));
         registerTweak(new DynamicLightTweak(new DynamicLightConfig(new File(dir, "dynamic-light.yml"))));
         registerTweak(new BiomeAnnouncerTweak(new BiomeAnnouncerConfig(new File(dir, "biome-announcer.yml"))));
         registerTweak(new StructureAnnouncerTweak(new StructureAnnouncerConfig(new File(dir, "structure-announcer.yml"))));
@@ -132,6 +136,13 @@ public class TweakManager {
             return;
         }
         callEvenDisabled(tweak, runnable);
+    }
+
+    public void call(AbstractTweak<?> tweak, World world, Runnable runnable) {
+        if (!tweak.isWorldEnabled(world)) {
+            return;
+        }
+        call(tweak, runnable);
     }
 
     private void callEvenDisabled(AbstractTweak<?> tweak, Runnable runnable) {

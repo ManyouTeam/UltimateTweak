@@ -1,5 +1,11 @@
 enabled: false
 
+# blacklist: enabled in every world except those listed below.
+# whitelist: enabled only in the worlds listed below.
+worlds:
+  mode: blacklist
+  list: []
+
 # The protection hook used for creating regions.
 protection-hook: Dominion
 

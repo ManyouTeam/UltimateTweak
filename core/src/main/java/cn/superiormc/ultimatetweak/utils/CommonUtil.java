@@ -208,45 +208,4 @@ public class CommonUtil {
                 : itemStack.getType().getMaxDurability();
         return maxDurability <= 0 || maxDurability - damageable.getDamage() >= requiredDurability;
     }
-
-    public static Player getDamager(Entity damager) {
-
-        if (damager instanceof Player) {
-            return (Player) damager;
-        }
-
-        if (damager instanceof Projectile projectile) {
-            ProjectileSource shooter = projectile.getShooter();
-            if (shooter instanceof Player player) {
-                return player;
-            }
-        }
-
-        if (damager instanceof TNTPrimed tnt) {
-            Entity source = tnt.getSource();
-            if (source instanceof Player player) {
-                return player;
-            }
-        }
-
-        if (damager instanceof AreaEffectCloud cloud) {
-            ProjectileSource source = cloud.getSource();
-            if (source instanceof Player player) {
-                return player;
-            }
-        }
-
-        if (damager instanceof Tameable tameable) {
-            AnimalTamer owner = tameable.getOwner();
-            if (owner instanceof Player player) {
-                return player;
-            }
-        }
-
-        if (damager instanceof LightningStrike lightning) {
-            return lightning.getCausingPlayer();
-        }
-
-        return null;
-    }
 }

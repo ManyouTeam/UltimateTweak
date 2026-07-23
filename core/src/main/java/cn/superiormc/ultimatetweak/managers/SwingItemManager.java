@@ -46,9 +46,12 @@ public class SwingItemManager extends PacketListenerAbstract {
             return;
         }
         UUID playerId = event.getUser().getUUID();
+        Player player = Bukkit.getPlayer(playerId);
         lastSwingTicks.computeIfPresent(playerId, (ignored, tick) -> currentTick.get());
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.SWING_ITEM)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onSwingItem(playerId));
+            if (player != null) {
+                TweakManager.tweakManager.call(tweak, player.getWorld(), () -> tweak.onSwingItem(playerId));
+            }
         }
     }
 
@@ -77,8 +80,12 @@ public class SwingItemManager extends PacketListenerAbstract {
         if (TweakManager.tweakManager == null) {
             return;
         }
+        Player player = Bukkit.getPlayer(playerId);
+        if (player == null) {
+            return;
+        }
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.NO_SWING_ITEM)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onNoSwingItem(playerId));
+            TweakManager.tweakManager.call(tweak, player.getWorld(), () -> tweak.onNoSwingItem(playerId));
         }
     }
 }

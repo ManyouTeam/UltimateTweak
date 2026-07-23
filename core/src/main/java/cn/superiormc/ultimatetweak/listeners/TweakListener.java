@@ -26,42 +26,42 @@ public class TweakListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onBlockDamage(BlockDamageEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_DAMAGE)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onBlockDamage(event));
+            TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockDamage(event));
         }
     }
 
     @EventHandler
     public void onBlockDamageAbort(BlockDamageAbortEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_DAMAGE_ABORT)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onBlockDamageAbort(event));
+            TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockDamageAbort(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockBreak(BlockBreakEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_BREAK)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onBlockBreak(event));
+            TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockBreak(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockDropItem(BlockDropItemEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_DROP_ITEM)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onBlockDropItem(event));
+            TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockDropItem(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onBlockPlace(BlockPlaceEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_PLACE)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onBlockPlace(event));
+            TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockPlace(event));
         }
     }
 
     @EventHandler
     public void onPlayerInteract(PlayerInteractEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_INTERACT)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onPlayerInteract(event));
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(), () -> tweak.onPlayerInteract(event));
         }
     }
 
@@ -70,7 +70,7 @@ public class TweakListener implements Listener {
         UUID playerId = event.getPlayer().getUniqueId();
         SwingItemManager.swingItemManager.track(playerId);
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_JOIN)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onPlayerJoin(event));
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(), () -> tweak.onPlayerJoin(event));
         }
     }
 
@@ -86,28 +86,29 @@ public class TweakListener implements Listener {
     @EventHandler(ignoreCancelled = true)
     public void onItemSpawn(ItemSpawnEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ITEM_SPAWN)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onItemSpawn(event));
+            TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(), () -> tweak.onItemSpawn(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_DAMAGE_BY_ENTITY)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onEntityDamageByEntity(event));
+            TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(),
+                    () -> tweak.onEntityDamageByEntity(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onEntityDeath(EntityDeathEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_DEATH)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onEntityDeath(event));
+            TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(), () -> tweak.onEntityDeath(event));
         }
     }
 
     @EventHandler(ignoreCancelled = true)
     public void onVehicleEnter(VehicleEnterEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.VEHICLE_ENTER)) {
-            TweakManager.tweakManager.call(tweak, () -> tweak.onVehicleEnter(event));
+            TweakManager.tweakManager.call(tweak, event.getVehicle().getWorld(), () -> tweak.onVehicleEnter(event));
         }
     }
 }

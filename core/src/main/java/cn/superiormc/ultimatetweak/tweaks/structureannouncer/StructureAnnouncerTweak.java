@@ -98,6 +98,10 @@ public class StructureAnnouncerTweak extends AbstractTweak<StructureAnnouncerCon
             lastStructures.remove(player.getUniqueId());
             return;
         }
+        if (!isWorldEnabled(player.getWorld())) {
+            lastStructures.remove(player.getUniqueId());
+            return;
+        }
 
         Optional<String> currentStructure = getCurrentStructure(player);
         UUID playerId = player.getUniqueId();

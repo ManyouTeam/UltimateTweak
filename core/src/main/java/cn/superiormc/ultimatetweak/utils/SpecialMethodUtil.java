@@ -22,23 +22,9 @@ public interface SpecialMethodUtil {
 
     void dispatchOpCommand(Player player, String command);
 
-    ItemStack getItemObject(Object object);
-
-    Object makeItemToObject(ItemStack item);
-
     void spawnEntity(Location location, EntityType entity);
 
     void playerTeleport(Player player, Location location);
-
-    SkullMeta setSkullMeta(SkullMeta meta, String skull);
-
-    String serializeSkull(SkullMeta meta);
-
-    void setItemName(ItemMeta meta, String name, Player player);
-
-    void setItemItemName(ItemMeta meta, String itemName, Player player);
-
-    void setItemLore(ItemMeta meta, List<String> lore, Player player);
 
     void sendChat(Player player, String text);
 
@@ -61,16 +47,6 @@ public interface SpecialMethodUtil {
     List<String> getItemLore(ItemMeta meta);
 
     String getEntityName(LivingEntity entity);
-
-    ItemStack editItemStack(ItemStack item,
-                            Player player,
-                            ConfigurationSection section,
-                            int amount,
-                            String... args);
-
-    ConfigurationSection serializeItemStack(ItemStack item);
-
-    void dropPrivateItem(Player player, ItemStack itemStack, Location loc);
 
     double getDestroySpeed(Block block, ItemStack itemStack);
 }

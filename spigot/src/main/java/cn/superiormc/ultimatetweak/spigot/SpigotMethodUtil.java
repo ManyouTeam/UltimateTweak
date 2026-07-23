@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.spigot;
 
-import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import cn.superiormc.ultimatetweak.utils.SchedulerUtil;
 import cn.superiormc.ultimatetweak.utils.SpecialMethodUtil;
 import cn.superiormc.ultimatetweak.utils.TextUtil;
@@ -11,16 +10,13 @@ import org.bukkit.block.Block;
 import org.bukkit.boss.BarColor;
 import org.bukkit.boss.BarStyle;
 import org.bukkit.boss.BossBar;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.profile.PlayerProfile;
-import org.bukkit.profile.PlayerTextures;
 
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -59,19 +55,6 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public ItemStack getItemObject(Object object) {
-        if (object instanceof ItemStack) {
-            return (ItemStack) object;
-        }
-        return null;
-    }
-
-    @Override
-    public Object makeItemToObject(ItemStack item) {
-        return item;
-    }
-
-    @Override
     public void spawnEntity(Location location, EntityType entity) {
         location.getWorld().spawnEntity(location, entity);
     }
@@ -88,58 +71,6 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
                     return size() > 256;
                 }
             });
-
-    @Override
-    public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
-        if (!CommonUtil.getMajorVersion(19)) {
-            return meta;
-        }
-        if (skull.length() > 16) {
-            try {
-                URL skinUrl = resolveSkinUrl(skull);
-                if (skinUrl == null) {
-                    return meta;
-                }
-                PlayerProfile profile = Bukkit.createPlayerProfile(UUID.randomUUID(), "custom_head");
-                PlayerTextures textures = profile.getTextures();
-                textures.setSkin(skinUrl);
-                profile.setTextures(textures);
-
-                meta.setOwnerProfile(profile);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        } else {
-            if (!playerProfiles.containsKey(skull)) {
-                playerProfiles.put(skull, Bukkit.getOfflinePlayer(skull).getPlayerProfile());
-            }
-            meta.setOwnerProfile(playerProfiles.get(skull));
-        }
-
-        return meta;
-    }
-
-    @Override
-    public String serializeSkull(SkullMeta meta) {
-        if (!CommonUtil.getMajorVersion(19)) {
-            return null;
-        }
-        try {
-            PlayerProfile ownerProfile = meta.getOwnerProfile();
-            if (ownerProfile != null) {
-                String name = ownerProfile.getName();
-                if (name != null && !name.trim().isEmpty()) {
-                    return name;
-                }
-                URL skinUrl = ownerProfile.getTextures().getSkin();
-                if (skinUrl != null) {
-                    return encodeSkinUrl(skinUrl);
-                }
-            }
-        } catch (Throwable ignored) {
-        }
-        return null;
-    }
 
     private URL resolveSkinUrl(String skull) throws Exception {
         if (skull == null) {
@@ -163,42 +94,6 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
             return new URL(matcher.group(1));
         }
         return null;
-    }
-
-    private String encodeSkinUrl(URL skinUrl) {
-        String textureJson = "{\"textures\":{\"SKIN\":{\"url\":\"" + skinUrl + "\"}}}";
-        return Base64.getEncoder().encodeToString(textureJson.getBytes(StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public void setItemName(ItemMeta meta, String name, Player player) {
-        meta.setDisplayName(TextUtil.parse(name, player));
-    }
-
-    @Override
-    public void setItemItemName(ItemMeta meta, String itemName, Player player) {
-        if (itemName.isEmpty()) {
-            meta.setItemName(" ");
-        } else {
-            meta.setItemName(TextUtil.parse(itemName, player));
-        }
-    }
-
-    @Override
-    public void setItemLore(ItemMeta meta, List<String> lores, Player player) {
-        List<String> newLore = new ArrayList<>();
-        for (String lore : lores) {
-            for (String singleLore : lore.split("\\\\n")) {
-                if (singleLore.isEmpty()) {
-                    newLore.add(" ");
-                    continue;
-                }
-                newLore.add(TextUtil.parse(singleLore, player));
-            }
-        }
-        if (!newLore.isEmpty()) {
-            meta.setLore(newLore);
-        }
     }
 
     @Override
@@ -271,21 +166,6 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     @Override
     public List<String> getItemLore(ItemMeta meta) {
         return meta.getLore();
-    }
-
-    @Override
-    public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
-        return item;
-    }
-
-    @Override
-    public ConfigurationSection serializeItemStack(ItemStack item) {
-        return null;
-    }
-
-    @Override
-    public void dropPrivateItem(Player player, ItemStack itemStack, Location loc) {
-        // EMPTY
     }
 
     @Override

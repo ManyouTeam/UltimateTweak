@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.doubledoor;
 
+import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.HookManager;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
@@ -74,7 +75,7 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
             return;
         }
         if (pairedBottom == null) {
-            if (getConfig().isAnimationEnabled() && getConfig().shouldAnimateSingleDoor()) {
+            if (isAnimationAvailable() && getConfig().shouldAnimateSingleDoor()) {
                 event.setCancelled(true);
                 playAnimation(clickedBottom, null, !clickedDoor.isOpen());
             }
@@ -82,7 +83,7 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
         }
 
         boolean targetOpen = !clickedDoor.isOpen();
-        if (getConfig().isAnimationEnabled()) {
+        if (isAnimationAvailable()) {
             event.setCancelled(true);
             playAnimation(clickedBottom, pairedBottom, targetOpen);
             return;
@@ -97,6 +98,10 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
 
     private boolean isAnimating(Block bottomBlock) {
         return activeAnimations.containsKey(DoorKey.of(bottomBlock));
+    }
+
+    private boolean isAnimationAvailable() {
+        return getConfig().isAnimationEnabled() && UltimateTweak.isEntityLibAvailable();
     }
 
     @Override

@@ -23,6 +23,7 @@ public class InitManager {
 
     public void init() {
         resourceOutput("tweaks/best-tool.yml", true);
+        resourceOutput("tweaks/better-drop-display.yml", true);
         resourceOutput("tweaks/double-door.yml", true);
         resourceOutput("tweaks/tree-cuter.yml", true);
         resourceOutput("tweaks/tree-replant.yml", true);

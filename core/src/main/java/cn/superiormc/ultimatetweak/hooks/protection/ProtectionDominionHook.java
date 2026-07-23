@@ -18,7 +18,7 @@ public class ProtectionDominionHook extends AbstractProtectionHook {
     }
 
     @Override
-    public boolean canUse(Player player, Location location) {
+    public boolean canBreak(Player player, Location location) {
         try {
             DominionAPI dominionAPI = DominionAPI.getInstance();
             DominionDTO dominionDTO = dominionAPI.getDominion(location);

@@ -1,5 +1,11 @@
 enabled: true
 
+# blacklist: enabled in every world except those listed below.
+# whitelist: enabled only in the worlds listed below.
+worlds:
+  mode: blacklist
+  list: []
+
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
 

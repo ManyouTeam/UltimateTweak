@@ -22,7 +22,6 @@ public class MatchItemManager {
         registerNewRule(new HasEnchants());
         registerNewRule(new HasLore());
         registerNewRule(new HasName());
-        registerNewRule(new ItemFormat());
         registerNewRule(new Items());
         registerNewRule(new Not());
         registerNewRule(new Material());

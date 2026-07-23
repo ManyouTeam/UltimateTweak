@@ -1,6 +1,7 @@
 package cn.superiormc.ultimatetweak.tweaks;
 
 import cn.superiormc.ultimatetweak.tweaks.config.AbstractTweakConfig;
+import org.bukkit.World;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockDamageAbortEvent;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -39,6 +40,10 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
 
     public boolean isEnabled() {
         return config.isEnabled();
+    }
+
+    public boolean isWorldEnabled(World world) {
+        return world != null && config.isWorldEnabled(world.getName());
     }
 
     public Set<TweakEventType> getEventTypes() {

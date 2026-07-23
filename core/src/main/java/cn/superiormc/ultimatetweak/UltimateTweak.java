@@ -6,12 +6,15 @@ import com.github.retrooper.packetevents.PacketEvents;
 import me.tofaa.entitylib.APIConfig;
 import me.tofaa.entitylib.EntityLib;
 import me.tofaa.entitylib.spigot.SpigotEntityLibPlatform;
+import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class UltimateTweak extends JavaPlugin {
 
     public static UltimateTweak instance;
+
+    private Metrics metrics;
 
     public static int yearVersion;
 
@@ -22,6 +25,8 @@ public final class UltimateTweak extends JavaPlugin {
     public static SpecialMethodUtil methodUtil;
 
     public static boolean isFolia = false;
+
+    private static boolean entityLibAvailable = false;
 
     @Override
     public void onEnable() {
@@ -38,7 +43,7 @@ public final class UltimateTweak extends JavaPlugin {
             try {
                 Class<?> paperClass = Class.forName("cn.superiormc.ultimatetweak.paper.PaperMethodUtil");
                 methodUtil = (SpecialMethodUtil) paperClass.getDeclaredConstructor().newInstance();
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPaper is found, entering Paper plugin mode...");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -47,7 +52,7 @@ public final class UltimateTweak extends JavaPlugin {
             try {
                 Class<?> spigotClass = Class.forName("cn.superiormc.ultimatetweak.spigot.SpigotMethodUtil");
                 methodUtil = (SpecialMethodUtil) spigotClass.getDeclaredConstructor().newInstance();
-                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...!");
+                TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fSpigot is found, entering Spigot plugin mode...");
             } catch (Throwable throwable) {
                 Bukkit.getConsoleSender().sendMessage(TextUtil.pluginPrefix() + " §cError: The plugin seems break, please download it again from site.");
                 Bukkit.getPluginManager().disablePlugin(this);
@@ -59,7 +64,12 @@ public final class UltimateTweak extends JavaPlugin {
                     "Please do not use in production environment!");
             isFolia = true;
         }
-        initEntityLib();
+        if (UltimateTweak.methodUtil.methodID().equals("paper")) {
+            initEntityLib();
+        } else {
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §6Warning: EntityLib does not support Spigot servers. " +
+                    "Block animations and block glow effects have been disabled.");
+        }
         new ErrorManager();
         new InitManager();
         new ActionManager();
@@ -72,16 +82,17 @@ public final class UltimateTweak extends JavaPlugin {
         new TweakManager();
         new MatchEntityManager();
         new HookManager();
-        new ItemManager();
         new LanguageManager();
         new CommandManager();
         new ListenerManager();
+        metrics = new Metrics(UltimateTweak.instance, 32804);
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fYour server version is: " + yearVersion + "." + majorVersion + "." + minorVersion + "!");
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fPlugin is loaded. Author: PQguanfang.");
     }
 
     private void initEntityLib() {
         if (EntityLib.getOptionalApi().isPresent()) {
+            entityLibAvailable = true;
             return;
         }
 
@@ -90,10 +101,20 @@ public final class UltimateTweak extends JavaPlugin {
                 .tickTickables()
                 .usePlatformLogger();
         EntityLib.init(platform, settings);
+        entityLibAvailable = true;
+    }
+
+    public static boolean isEntityLibAvailable() {
+        return entityLibAvailable;
     }
 
     @Override
     public void onDisable() {
+        entityLibAvailable = false;
+        if (metrics != null) {
+            metrics.shutdown();
+            metrics = null;
+        }
         if (TweakManager.tweakManager != null) {
             TweakManager.tweakManager.shutdown();
         }

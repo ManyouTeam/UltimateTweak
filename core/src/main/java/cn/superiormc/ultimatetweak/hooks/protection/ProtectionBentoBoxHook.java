@@ -15,7 +15,7 @@ public class ProtectionBentoBoxHook extends AbstractProtectionHook {
     }
 
     @Override
-    public boolean canUse(Player player, Location location) {
+    public boolean canBreak(Player player, Location location) {
         Island island = BentoBox.getInstance().getIslandsManager().getIslandAt(location).orElse(null);
         if (island != null) {
             return island.isAllowed(User.getInstance(player), Flags.BREAK_BLOCKS);

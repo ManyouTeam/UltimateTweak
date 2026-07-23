@@ -2,16 +2,11 @@ package cn.superiormc.ultimatetweak.paper;
 
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.ConfigManager;
-import cn.superiormc.ultimatetweak.managers.ErrorManager;
-import cn.superiormc.ultimatetweak.paper.methods.BuildItemPaper;
-import cn.superiormc.ultimatetweak.paper.methods.DebuildItemPaper;
 import cn.superiormc.ultimatetweak.paper.utils.PaperTextUtil;
-import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import cn.superiormc.ultimatetweak.utils.SchedulerUtil;
 import cn.superiormc.ultimatetweak.utils.SpecialMethodUtil;
 import cn.superiormc.ultimatetweak.utils.TextUtil;
 import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
@@ -20,14 +15,11 @@ import net.kyori.adventure.util.Ticks;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.*;
 
@@ -82,26 +74,6 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public ItemStack getItemObject(Object object) {
-        if (object instanceof ItemStack) {
-            ErrorManager.errorManager.sendErrorMessage("§6Warning: The item you try obtained is using legacy format!");
-            return (ItemStack) object;
-        }
-        if (CommonUtil.getMajorVersion(15)) {
-            return ItemStack.deserializeBytes((byte[]) object);
-        }
-        return null;
-    }
-
-    @Override
-    public Object makeItemToObject(ItemStack item) {
-        if (CommonUtil.getMajorVersion(15)) {
-            return item.serializeAsBytes();
-        }
-        return item;
-    }
-
-    @Override
     public void spawnEntity(Location location, EntityType entity) {
         if (UltimateTweak.isFolia) {
             Bukkit.getRegionScheduler().run(UltimateTweak.instance, location, task -> location.getWorld().spawnEntity(location, entity));
@@ -126,74 +98,6 @@ public class PaperMethodUtil implements SpecialMethodUtil {
                     return size() > 256;
                 }
             });
-
-    @Override
-    public SkullMeta setSkullMeta(SkullMeta meta, String skull) {
-        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
-        if (skull.length() > 16) {
-            profile.setProperty(new ProfileProperty("textures", skull));
-            meta.setPlayerProfile(profile);
-        } else {
-            if (!playerProfiles.containsKey(skull)) {
-                playerProfiles.put(skull, Bukkit.getOfflinePlayer(skull).getPlayerProfile());
-            }
-            meta.setPlayerProfile(playerProfiles.get(skull));
-        }
-        return meta;
-    }
-
-    @Override
-    public String serializeSkull(SkullMeta meta) {
-        PlayerProfile profile = meta.getPlayerProfile();
-        if (profile != null) {
-            String name = profile.getName();
-            if (name != null && !name.trim().isEmpty()) {
-                return name;
-            }
-            for (ProfileProperty property : profile.getProperties()) {
-                if ("textures".equalsIgnoreCase(property.getName()) && property.getValue() != null && !property.getValue().isEmpty()) {
-                    return property.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    @Override
-    public void setItemName(ItemMeta meta, String name, Player player) {
-        if (PaperTextUtil.containsLegacyCodes(name)) {
-            name = "<!i>" + name;
-        }
-        meta.displayName(PaperTextUtil.modernParse(name, player));
-    }
-
-    @Override
-    public void setItemItemName(ItemMeta meta, String itemName, Player player) {
-        if (!itemName.isEmpty()) {
-            if (PaperTextUtil.containsLegacyCodes(itemName)) {
-                itemName = "<!i>" + itemName;
-            }
-            meta.itemName(PaperTextUtil.modernParse(itemName, player));
-        } else {
-            meta.itemName();
-        }
-    }
-
-    @Override
-    public void setItemLore(ItemMeta meta, List<String> lores, Player player) {
-        List<Component> veryNewLore = new ArrayList<>();
-        for (String lore : lores) {
-            for (String singleLore : lore.split("\\\\n")) {
-                if (PaperTextUtil.containsLegacyCodes(singleLore)) {
-                    singleLore = "<!i>" + singleLore;
-                }
-                veryNewLore.add(PaperTextUtil.modernParse(singleLore, player));
-            }
-        }
-        if (!veryNewLore.isEmpty()) {
-            meta.lore(veryNewLore);
-        }
-    }
 
     @Override
     public void sendChat(Player player, String text) {
@@ -276,50 +180,11 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
-    public ItemStack editItemStack(ItemStack item, Player player, ConfigurationSection section, int amount, String... args) {
-        if (!CommonUtil.getMinorVersion(21, 6)) {
-            return item;
-        }
-        return BuildItemPaper.editItemStack(item, player, section, amount, args);
-    }
-
-    @Override
-    public ConfigurationSection serializeItemStack(ItemStack item) {
-        if (!CommonUtil.getMinorVersion(21, 6)) {
-            return null;
-        }
-        return DebuildItemPaper.serializeItemStack(item);
-    }
-
-    @Override
     public String getEntityName(LivingEntity entity) {
         if (entity.customName() != null) {
             return PaperTextUtil.changeToString(entity.customName());
         }
         return PaperTextUtil.changeToString(entity.name());
-    }
-
-    @Override
-    public void dropPrivateItem(Player player, ItemStack itemStack, Location loc) {
-        if (!CommonUtil.getMinorVersion(19, 1)) {
-            return;
-        }
-
-        Item item = loc.getWorld().dropItem(loc, itemStack);
-        
-        item.setOwner(player.getUniqueId());
-
-        for (Player p : loc.getWorld().getPlayers()) {
-            if (!p.equals(player)) {
-                p.hideEntity(UltimateTweak.instance, item);
-            }
-        }
-
-        SchedulerUtil.runTaskLater(item, () -> {
-            if (!item.isDead()) {
-                item.remove();
-            }
-        }, 1200L);
     }
 
     @Override

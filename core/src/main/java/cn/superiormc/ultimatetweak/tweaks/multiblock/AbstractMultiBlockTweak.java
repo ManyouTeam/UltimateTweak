@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.multiblock;
 
+import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.AttributeModifyManager;
 import cn.superiormc.ultimatetweak.managers.HookManager;
 import cn.superiormc.ultimatetweak.managers.MatchItemManager;
@@ -390,7 +391,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
 
         private void applyGlow() {
-            if (!getConfig().isDamageGlowEnabled()) {
+            if (!getConfig().isDamageGlowEnabled() || !UltimateTweak.isEntityLibAvailable()) {
                 return;
             }
             List<Block> blocks = new ArrayList<>(getCurrentBlocks(data()));

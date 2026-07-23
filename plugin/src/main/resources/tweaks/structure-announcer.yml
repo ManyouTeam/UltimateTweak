@@ -1,5 +1,11 @@
 enabled: true
 
+# blacklist: enabled in every world except those listed below.
+# whitelist: enabled only in the worlds listed below.
+worlds:
+  mode: blacklist
+  list: []
+
 # Empty list means all structures.
 # Supports names like village_plains or minecraft:village_plains.
 structures: []

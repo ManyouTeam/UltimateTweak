@@ -81,7 +81,7 @@ public class StructureAutoProtectTweak extends AbstractTweak<StructureAutoProtec
     }
 
     private void scanPlayerChunk(Player player) {
-        if (!player.isOnline()) {
+        if (!player.isOnline() || !isWorldEnabled(player.getWorld())) {
             return;
         }
         Location location = player.getLocation();

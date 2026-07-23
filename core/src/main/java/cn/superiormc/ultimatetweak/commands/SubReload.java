@@ -2,7 +2,6 @@ package cn.superiormc.ultimatetweak.commands;
 
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.ConfigManager;
-import cn.superiormc.ultimatetweak.managers.ItemManager;
 import cn.superiormc.ultimatetweak.managers.LanguageManager;
 import cn.superiormc.ultimatetweak.managers.TweakManager;
 import org.bukkit.entity.Player;
@@ -25,7 +24,6 @@ public class SubReload extends AbstractCommand {
         } else {
             TweakManager.tweakManager.reload();
         }
-        new ItemManager();
         new LanguageManager();
         LanguageManager.languageManager.sendStringText(player, "plugin.reloaded");
     }
@@ -39,7 +37,6 @@ public class SubReload extends AbstractCommand {
         } else {
             TweakManager.tweakManager.reload();
         }
-        new ItemManager();
         new LanguageManager();
         LanguageManager.languageManager.sendStringText("plugin.reloaded");
     }

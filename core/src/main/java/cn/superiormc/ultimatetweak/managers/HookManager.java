@@ -211,7 +211,7 @@ public class HookManager {
             return true;
         }
         for (AbstractProtectionHook protectionHook : protectionHooks.values()) {
-            if (!protectionHook.canUse(player, location)) {
+            if (!protectionHook.canBreak(player, location)) {
                 return false;
             }
         }

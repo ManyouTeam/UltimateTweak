@@ -1,0 +1,53 @@
+enabled: false
+
+# blacklist: enabled in every world except those listed below.
+# whitelist: enabled only in the worlds listed below.
+worlds:
+  mode: blacklist
+  list: []
+
+render:
+  # FIXED preserves resource-pack 3D models. The explicit -90 degree X rotation
+  # below is what actually lays the model flat on the ground.
+  transform: fixed
+
+  scale:
+    x: 0.65
+    y: 0.65
+    z: 0.65
+
+  # Extra clearance above the collision surface. The actual surface height is
+  # calculated from collision boxes (snow layers, carpets, slabs, trapdoors, etc.).
+  translation:
+    x: 0.0
+    y: 0.16
+    z: 0.0
+
+  rotation:
+    x: -90.0
+    y: 0.0
+    z: 0.0
+
+  # Adds a stable random value to rotation.y for each dropped entity.
+  random-yaw: true
+  full-bright: false
+  view-range: 1.0
+  interpolation-duration: 0
+
+  shadow:
+    radius: 0.15
+    strength: 0.35
+
+settling:
+  # The item must remain within movement-threshold for this many ticks before
+  # it is changed into an ItemDisplay. 20 ticks = 1 second.
+  delay-ticks: 10
+  movement-threshold: 0.03
+
+label:
+  enabled: true
+  show-amount: true
+  # Supports {name} and {amount}. The item name keeps its native/custom component.
+  format: "{name} ×{amount}"
+  # Display bounding-box height; controls how high the name is rendered.
+  height: 0.55

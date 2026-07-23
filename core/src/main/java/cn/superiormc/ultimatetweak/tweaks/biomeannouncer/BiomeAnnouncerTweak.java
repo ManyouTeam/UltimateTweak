@@ -98,6 +98,10 @@ public class BiomeAnnouncerTweak extends AbstractTweak<BiomeAnnouncerConfig> {
             removePlayer(player.getUniqueId());
             return;
         }
+        if (!isWorldEnabled(player.getWorld())) {
+            removePlayer(player.getUniqueId());
+            return;
+        }
 
         Biome currentBiome = player.getLocation().getBlock().getBiome();
         UUID playerId = player.getUniqueId();

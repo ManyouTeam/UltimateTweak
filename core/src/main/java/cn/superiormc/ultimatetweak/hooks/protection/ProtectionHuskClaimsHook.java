@@ -19,7 +19,7 @@ public class ProtectionHuskClaimsHook extends AbstractProtectionHook {
     }
 
     @Override
-    public boolean canUse(Player player, Location location) {
+    public boolean canBreak(Player player, Location location) {
         return api.isOperationAllowed(api.getOnlineUser(player.getUniqueId()), OperationType.BLOCK_BREAK, api.getPosition(location));
     }
 

@@ -47,6 +47,10 @@ public class TreeReplantTweak extends AbstractTweak<TreeReplantConfig> {
                 task[0].cancel();
                 return;
             }
+            if (!isWorldEnabled(item.getWorld())) {
+                task[0].cancel();
+                return;
+            }
             if (!item.isOnGround()) {
                 return;
             }

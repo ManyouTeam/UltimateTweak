@@ -19,7 +19,7 @@ public class ProtectionWorldGuardHook extends AbstractProtectionHook {
     }
 
     @Override
-    public boolean canUse(Player player, Location location) {
+    public boolean canBreak(Player player, Location location) {
         LocalPlayer localPlayer = WorldGuardPlugin.inst().wrapPlayer(player);
         return WorldGuard.getInstance().getPlatform().getRegionContainer().createQuery().testBuild(BukkitAdapter.adapt(location), localPlayer, Flags.BLOCK_BREAK)
                 || WorldGuard.getInstance().getPlatform().getSessionManager().hasBypass(localPlayer, BukkitAdapter.adapt(player.getWorld()));

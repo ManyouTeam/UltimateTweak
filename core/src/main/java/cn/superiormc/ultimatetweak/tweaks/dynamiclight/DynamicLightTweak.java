@@ -123,6 +123,11 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
     }
 
     private void updatePlayer(Player player) {
+        if (!isWorldEnabled(player.getWorld())) {
+            removePlayerLight(player.getUniqueId());
+            visibleLights.remove(player.getUniqueId());
+            return;
+        }
         updateLight(player);
         syncViewerLights(player);
     }

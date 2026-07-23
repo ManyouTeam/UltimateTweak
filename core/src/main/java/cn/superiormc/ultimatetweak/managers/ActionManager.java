@@ -37,8 +37,6 @@ public class ActionManager {
         registerNewAction("any", new ActionAny());
         registerNewAction("conditional", new ActionConditional());
         registerNewAction("mythicmobs_spawn", new ActionMythicMobsSpawn());
-        registerNewAction("drop_item", new ActionDropItem());
-        registerNewAction("give_item", new ActionGiveItem());
     }
 
     public void registerNewAction(String actionID,

@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.multiblock.treecutter;
 
+import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager.SnapshotBlock;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager.TreeDetectionResult;
@@ -59,7 +60,7 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
         TreeDetectionResult result = session.data();
         World world = result.snapshot().world();
         boolean breakLeaves = getConfig().shouldBreakLeaves(player);
-        boolean playAnimation = getConfig().isAnimationEnabled();
+        boolean playAnimation = getConfig().isAnimationEnabled() && UltimateTweak.isEntityLibAvailable();
         List<TreeBlockDisplayAnimation.AnimationBlock> animationBlocks = new ArrayList<>();
         TreeBlockDisplayAnimation.AnimationSession animationSession = null;
 

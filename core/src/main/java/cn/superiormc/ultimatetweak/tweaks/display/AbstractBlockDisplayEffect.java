@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.display;
 
+import cn.superiormc.ultimatetweak.UltimateTweak;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
@@ -71,7 +72,7 @@ public abstract class AbstractBlockDisplayEffect {
     }
 
     protected boolean spawnDisplays() {
-        if (!hasBlocks()) {
+        if (!UltimateTweak.isEntityLibAvailable() || !hasBlocks()) {
             return false;
         }
 

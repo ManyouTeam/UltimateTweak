@@ -18,7 +18,7 @@ public class ProtectionPlotSquaredHook extends AbstractProtectionHook {
     }
 
     @Override
-    public boolean canUse(Player player, org.bukkit.Location location) {
+    public boolean canBreak(Player player, org.bukkit.Location location) {
         BukkitPlayer bukkitPlayer = BukkitUtil.adapt(player);
         Plot plot = bukkitPlayer.getCurrentPlot();
         if (plot != null) {
