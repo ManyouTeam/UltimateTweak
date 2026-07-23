@@ -6,6 +6,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
 

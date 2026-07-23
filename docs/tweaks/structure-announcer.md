@@ -5,6 +5,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Empty list means all structures.
 # Supports names like village_plains or minecraft:village_plains.
 structures: []

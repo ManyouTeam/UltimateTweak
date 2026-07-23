@@ -5,6 +5,10 @@
 ```yaml
 enabled: false
 
+worlds:
+  mode: blacklist
+  list: []
+
 # The protection hook used for creating regions.
 protection-hook: Dominion
 

@@ -13,7 +13,6 @@
 
 ## &#x20;📋Format
 
-* [📝ItemFormat™](format/itemformat-tm.md)
 * [🎬Action Format](format/action-format.md)
 * [⚖️Condition Format](format/condition-format.md)
 * [➗Math Calculate Format](format/math-calculate-format.md)
@@ -23,10 +22,12 @@
 ## 💎Tweaks
 
 * [🛠️Best Tool](tweaks/best-tool.md)
+* [🚪Double Door](tweaks/double-door.md)
 * [🌲Tree Cutter](tweaks/tree-cutter.md)
 * [🌱Tree Replant](tweaks/tree-replant.md)
 * [⛏️Vein Mine](tweaks/vein-mine.md)
 * [🔦Dynamic Light](tweaks/dynamic-light.md)
+* [💎Better Drop Display](tweaks/better-drop-display.md)
 * [🚫Entity Vehicle Restriction](tweaks/entity-vehicle-restriction.md)
 * [🌍Biome Announcer](tweaks/biome-announcer.md)
 * [🏛️Structure Announcer](tweaks/structure-announcer.md)
@@ -36,4 +37,3 @@
 
 * [🌏Advanced Language Managment](features/advanced-language-managment.md)
 * [🎨Color Code](features/color-code.md)
-* [💾Saved Item (Item Manager)](features/saved-item-item-manager.md)

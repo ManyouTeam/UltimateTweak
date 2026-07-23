@@ -6,6 +6,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Wait before checking a newly dropped sapling.
 cooldown-ticks: 20
 

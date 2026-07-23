@@ -43,7 +43,7 @@ general-actions:
 
 ```yaml
 actions:
-  1: 
+  1:
     type: particle
     particle: HEART
     count: 20
@@ -209,39 +209,11 @@ general-actions:
   1:
     type: conditional
     conditions:
-      1: 
+      1:
         type: world
         world: lobby
     actions:
       1:
         type: entity_spawn
         entity: ZOMBIE
-```
-
-## Give Item
-
-Should use ItemFormat in `item` option. For more info about Item Format, plaese [click here](https://ultimateshop.superiormc.cn/format/itemformat-tm).
-
-```yaml
-general-actions:
-  1:
-    type: give_item
-    item:
-      material: apple # Item Format here
-```
-
-## Drop Item
-
-Should use ItemFormat in `item` option. For more info about Item Format, plaese [click here](https://ultimateshop.superiormc.cn/format/itemformat-tm).
-
-```yaml
-general-actions:
-  1:
-    type: drop_item
-    item:
-      material: apple # Item Format here
-      world: world # Optional, support placeholder
-      x: 15 # Optional, support placeholder
-      y: 12 # Optional, support placeholder
-      z: 10 # Optional, support placeholder
 ```

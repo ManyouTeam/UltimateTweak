@@ -6,6 +6,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # How often held items and the player's position are checked.
 check-interval-ticks: 2
 

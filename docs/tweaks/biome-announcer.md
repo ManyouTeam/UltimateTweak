@@ -5,6 +5,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Empty list means all biomes.
 # Supports names like plains or minecraft:plains.
 biomes: []

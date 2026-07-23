@@ -6,6 +6,10 @@
 ```yaml
 enabled: false
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Supported values: boat, minecart
 vehicles:
   - boat

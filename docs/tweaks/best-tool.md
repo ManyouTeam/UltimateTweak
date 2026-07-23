@@ -6,6 +6,10 @@
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # hotbar: search slots 0-8; inventory: search the entire player storage inventory.
 # Please note that use inventory mode will cost ~x5 extra performance, don't recommended to use it.
 search-scope: hotbar

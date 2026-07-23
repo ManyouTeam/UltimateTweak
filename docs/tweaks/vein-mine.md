@@ -10,6 +10,10 @@ Since Vein Mine almost share same code from Tree Cutter, so, please also view **
 ```yaml
 enabled: true
 
+worlds:
+  mode: blacklist
+  list: []
+
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
 

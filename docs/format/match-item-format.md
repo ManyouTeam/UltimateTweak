@@ -157,38 +157,6 @@ Match item rarity (`NONE` when no rarity exists).
 rarity: RARE
 ```
 
-#### item-format
-
-Advanced exact match with DebuildItem structured output.
-
-```yaml
-item-format:
-  material: DIAMOND_SWORD
-  name: "&cFlame Sword"
-  enchantment:
-    sharpness: 5
-```
-
-#### item-format-settings.require-same-key
-
-Require strict same-level key consistency.
-
-```yaml
-item-format-settings:
-  require-same-key: true
-```
-
-#### item-format-settings.ignore-key
-
-Ignore selected keys while comparing (prefix ignore supported, such as `nbt` to ignore `nbt.*`).
-
-```yaml
-item-format-settings:
-  ignore-key:
-    - amount
-    - damage
-```
-
 #### contains-nbt (requires NBTAPI)
 
 Check whether an NBT path exists.
