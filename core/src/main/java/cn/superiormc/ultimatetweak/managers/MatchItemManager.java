@@ -25,6 +25,8 @@ public class MatchItemManager {
         registerNewRule(new Items());
         registerNewRule(new Not());
         registerNewRule(new Material());
+        registerNewRule(new MaterialPattern());
+        registerNewRule(new BlockMaterial());
         registerNewRule(new None());
         if (CommonUtil.checkPluginLoad("NBTAPI")) {
             registerNewRule(new ContainsNBT());

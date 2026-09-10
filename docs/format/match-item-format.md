@@ -24,6 +24,25 @@ material-tag:
   - minecraft:planks
 ```
 
+#### material-pattern
+
+Match material keys with case-insensitive `*` and `?` wildcards. A pattern without
+a namespace matches the key only.
+
+```yaml
+material-pattern:
+  - "*_slab"
+  - "minecraft:*_carpet"
+```
+
+#### is-block
+
+Match whether the Bukkit material can be placed as a block.
+
+```yaml
+is-block: true
+```
+
 #### items
 
 Match by external item system ID (resolved by HookManager).

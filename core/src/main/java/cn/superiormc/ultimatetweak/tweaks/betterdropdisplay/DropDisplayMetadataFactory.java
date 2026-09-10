@@ -1,19 +1,18 @@
 package cn.superiormc.ultimatetweak.tweaks.betterdropdisplay;
 
 import cn.superiormc.ultimatetweak.tweaks.config.BetterDropDisplayConfig;
+import cn.superiormc.ultimatetweak.tweaks.config.BetterDropDisplayConfig.ModelProfile;
 import com.github.retrooper.packetevents.protocol.component.ComponentTypes;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.item.ItemStack;
 import com.github.retrooper.packetevents.protocol.world.states.type.StateType;
 import com.github.retrooper.packetevents.resources.ResourceLocation;
-import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3f;
 import me.tofaa.entitylib.meta.EntityMeta;
 import me.tofaa.entitylib.meta.display.AbstractDisplayMeta;
 import me.tofaa.entitylib.meta.display.ItemDisplayMeta;
 import me.tofaa.entitylib.meta.projectile.ItemEntityMeta;
 import net.kyori.adventure.text.Component;
-import org.joml.Quaternionf;
 
 final class DropDisplayMetadataFactory {
 
@@ -26,27 +25,34 @@ final class DropDisplayMetadataFactory {
                                   ItemStack itemStack,
                                   float yawRadians,
                                   float groundTranslationY,
-                                  BetterDropDisplayConfig config) {
+                                  BetterDropDisplayConfig config,
+                                  ModelProfile profile,
+                                  boolean landingStart,
+                                  int interpolationDuration) {
         ItemDisplayMeta meta = (ItemDisplayMeta) EntityMeta.createMeta(entityId, EntityTypes.ITEM_DISPLAY);
         meta.setItem(itemStack);
-        meta.setDisplayType(config.getDisplayType());
+        meta.setDisplayType(profile.getDisplayType());
         meta.setBillboardConstraints(AbstractDisplayMeta.BillboardConstraints.FIXED);
-        meta.setScale(new Vector3f(config.getScaleX(), config.getScaleY(), config.getScaleZ()));
+        meta.setScale(new Vector3f(profile.getScaleX(), profile.getScaleY(), profile.getScaleZ()));
         meta.setTranslation(new Vector3f(
-                config.getTranslationX(), groundTranslationY, config.getTranslationZ()));
-        meta.setLeftRotation(rotation(config, yawRadians));
-        meta.setBrightnessOverride(config.isFullBright() ? FULL_BRIGHTNESS : -1);
-        meta.setShadowRadius(config.getShadowRadius());
-        meta.setShadowStrength(config.getShadowStrength());
-        meta.setViewRange(config.getViewRange());
+                profile.getTranslationX(),
+                groundTranslationY + (landingStart ? profile.getStartOffsetY() : 0.0F),
+                profile.getTranslationZ()));
+        meta.setLeftRotation(DropDisplayPose.packetRotation(landingStart
+                ? DropDisplayPose.startRotation(profile, yawRadians)
+                : DropDisplayPose.targetRotation(profile, yawRadians)));
+        meta.setBrightnessOverride(profile.isFullBright() ? FULL_BRIGHTNESS : -1);
+        meta.setShadowRadius(profile.getShadowRadius());
+        meta.setShadowStrength(profile.getShadowStrength());
+        meta.setViewRange(profile.getViewRange());
         meta.setInterpolationDelay(0);
-        meta.setTransformationInterpolationDuration(config.getInterpolationDuration());
-        meta.setPositionRotationInterpolationDuration(config.getInterpolationDuration());
+        meta.setTransformationInterpolationDuration(interpolationDuration);
+        meta.setPositionRotationInterpolationDuration(interpolationDuration);
         if (config.isLabelEnabled()) {
             meta.setCustomName(createLabel(itemStack, config));
             meta.setCustomNameVisible(true);
             meta.setHeight(config.getLabelHeight());
-            meta.setWidth(Math.max(config.getScaleX(), config.getScaleZ()));
+            meta.setWidth(Math.max(profile.getScaleX(), profile.getScaleZ()));
         }
         return meta;
     }
@@ -55,14 +61,6 @@ final class DropDisplayMetadataFactory {
         ItemEntityMeta meta = (ItemEntityMeta) EntityMeta.createMeta(entityId, EntityTypes.ITEM);
         meta.setItem(itemStack);
         return meta;
-    }
-
-    private static Quaternion4f rotation(BetterDropDisplayConfig config, float randomYawRadians) {
-        Quaternionf rotation = new Quaternionf()
-                .rotateY((float) Math.toRadians(config.getRotationY()) + randomYawRadians)
-                .rotateX((float) Math.toRadians(config.getRotationX()))
-                .rotateZ((float) Math.toRadians(config.getRotationZ()));
-        return new Quaternion4f(rotation.x, rotation.y, rotation.z, rotation.w);
     }
 
     private static Component createLabel(ItemStack itemStack, BetterDropDisplayConfig config) {

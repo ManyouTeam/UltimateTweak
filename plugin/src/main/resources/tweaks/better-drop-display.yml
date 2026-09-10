@@ -7,42 +7,111 @@ worlds:
   list: []
 
 render:
-  # FIXED preserves resource-pack 3D models. The explicit -90 degree X rotation
-  # below is what actually lays the model flat on the ground.
-  transform: fixed
+  # The initial and target metadata are sent one tick apart. The client blends
+  # the transformation over this many ticks.
+  landing-duration-ticks: 8
 
-  scale:
-    x: 0.65
-    y: 0.65
-    z: 0.65
+  # Profiles are checked by priority, highest first. The first matching profile
+  # wins. "default" is used when no match-item section matches.
+  models:
+    thin-blocks:
+      priority: 400
+      match-item:
+        any:
+          1:
+            material-pattern:
+              - "*_slab"
+              - "*_carpet"
+              - "*_pressure_plate"
+          2:
+            material:
+              - snow
+      transform: fixed
+      scale: { x: 0.55, y: 0.55, z: 0.55 }
+      rotation: { x: 0.0, y: 0.0, z: 0.0 }
+      landing-start:
+        rotation: { x: -18.0, y: 0.0, z: 12.0 }
+        offset-y: 0.08
+      dimensions: { x: 1.0, y: 0.125, z: 1.0 }
+      translation: { x: 0.0, z: 0.0 }
+      clearance: 0.01
+      random-yaw: true
 
-  # Extra clearance above the collision surface. The actual surface height is
-  # calculated from collision boxes (snow layers, carpets, slabs, trapdoors, etc.).
-  translation:
-    x: 0.0
-    y: 0.16
-    z: 0.0
+    shield:
+      priority: 350
+      match-item:
+        material:
+          - shield
+      transform: fixed
+      scale: { x: 0.55, y: 0.55, z: 0.55 }
+      rotation: { x: -90.0, y: 0.0, z: 0.0 }
+      landing-start:
+        rotation: { x: -25.0, y: 0.0, z: 0.0 }
+        offset-y: 0.10
+      dimensions: { x: 1.0, y: 0.12, z: 1.0 }
+      translation: { x: 0.0, z: 0.0 }
+      clearance: 0.02
+      random-yaw: true
 
-  rotation:
-    x: -90.0
-    y: 0.0
-    z: 0.0
+    trident:
+      priority: 340
+      match-item:
+        material:
+          - trident
+      transform: fixed
+      scale: { x: 0.70, y: 0.70, z: 0.70 }
+      rotation: { x: -90.0, y: 0.0, z: 0.0 }
+      landing-start:
+        rotation: { x: -30.0, y: 0.0, z: 0.0 }
+        offset-y: 0.12
+      dimensions: { x: 1.0, y: 0.08, z: 1.0 }
+      translation: { x: 0.0, z: 0.0 }
+      clearance: 0.03
+      random-yaw: true
 
-  # Adds a stable random value to rotation.y for each dropped entity.
-  random-yaw: true
+    blocks:
+      priority: 300
+      match-item:
+        is-block: true
+      transform: fixed
+      scale: { x: 0.48, y: 0.48, z: 0.48 }
+      rotation: { x: 0.0, y: 0.0, z: 0.0 }
+      landing-start:
+        rotation: { x: -22.0, y: 0.0, z: 16.0 }
+        offset-y: 0.10
+      dimensions: { x: 1.0, y: 1.0, z: 1.0 }
+      translation: { x: 0.0, z: 0.0 }
+      clearance: 0.01
+      random-yaw: true
+
+    default:
+      priority: -1
+      transform: fixed
+      scale: { x: 0.65, y: 0.65, z: 0.65 }
+      rotation: { x: -90.0, y: 0.0, z: 0.0 }
+      landing-start:
+        rotation: { x: -20.0, y: 0.0, z: 0.0 }
+        offset-y: 0.10
+      dimensions: { x: 1.0, y: 0.08, z: 1.0 }
+      translation: { x: 0.0, z: 0.0 }
+      clearance: 0.02
+      random-yaw: true
+
+  # These display properties are inherited by every profile and can be
+  # overridden inside one profile.
   full-bright: false
   view-range: 1.0
-  interpolation-duration: 0
-
   shadow:
     radius: 0.15
     strength: 0.35
 
 settling:
-  # The item must remain within movement-threshold for this many ticks before
-  # it is changed into an ItemDisplay. 20 ticks = 1 second.
-  delay-ticks: 10
-  movement-threshold: 0.03
+  # Entering the displayed state uses the smaller threshold. A displayed item
+  # uses the larger exit threshold, preventing tiny position corrections from
+  # repeatedly rebuilding the client entity.
+  delay-ticks: 6
+  enter-movement-threshold: 0.02
+  exit-movement-threshold: 0.05
 
 label:
   enabled: true

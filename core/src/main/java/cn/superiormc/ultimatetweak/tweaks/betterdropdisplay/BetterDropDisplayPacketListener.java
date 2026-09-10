@@ -1,5 +1,6 @@
 package cn.superiormc.ultimatetweak.tweaks.betterdropdisplay;
 
+import cn.superiormc.ultimatetweak.tweaks.config.BetterDropDisplayConfig.ModelProfile;
 import cn.superiormc.ultimatetweak.utils.SchedulerUtil;
 import com.github.retrooper.packetevents.PacketEvents;
 import com.github.retrooper.packetevents.event.PacketListenerAbstract;
@@ -88,14 +89,15 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
             return;
         }
 
-        float yaw = tweak.getConfig().isRandomYaw()
+        ModelProfile profile = tweak.getModelProfile(packet.getUUID().orElse(null));
+        float yaw = profile.isRandomYaw()
                 ? stableYaw(packet.getUUID().orElse(null), packet.getEntityId()) : 0.0F;
         boolean initiallyStationary = packet.getVelocity().isPresent()
                 && packet.getVelocity().get().lengthSquared() < 0.000001D;
         views.computeIfAbsent(viewerId, ignored -> new ConcurrentHashMap<>())
                 .put(packet.getEntityId(), new DropView(
                         packet.getEntityId(), packet.getUUID().orElse(null), packet.getPosition(),
-                        yaw, initiallyStationary));
+                        yaw, initiallyStationary, profile));
     }
 
     private void handleMetadata(PacketSendEvent event) {
@@ -128,7 +130,8 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
 
         ItemDisplayMeta meta = DropDisplayMetadataFactory.create(
                 packet.getEntityId(), itemStack, view.yawRadians,
-                view.groundTranslationY, tweak.getConfig());
+                view.groundTranslationY, tweak.getConfig(), view.profile,
+                false, 0);
         packet.setEntityMetadata(meta.entityData(event.getClientVersion()));
         event.markForReEncode(true);
     }
@@ -188,12 +191,13 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
         }
         view.offGroundUpdates = 0;
         if (view.displayed) {
-            if (hasMovedSignificantly(view) && !view.itemSwitchScheduled) {
+            if (hasMovedSignificantly(view, tweak.getConfig().getSettleExitMovementThreshold())
+                    && !view.itemSwitchScheduled) {
                 scheduleItemSwitch(event, view);
             }
             return;
         }
-        if (hasMovedSignificantly(view)) {
+        if (hasMovedSignificantly(view, tweak.getConfig().getSettleEnterMovementThreshold())) {
             cancelDisplayCountdown(view);
             view.settleAnchor = view.position;
         }
@@ -238,14 +242,16 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
             return;
         }
         if (player == null || !player.isOnline() || view.displayed || !view.grounded
-                || view.itemStack == null || !tweak.isEnabled() || hasMovedSignificantly(view)) {
+                || view.itemStack == null || !tweak.isEnabled()
+                || hasMovedSignificantly(view, tweak.getConfig().getSettleEnterMovementThreshold())) {
             view.displaySwitchScheduled = false;
             return;
         }
         tweak.resolveGroundTranslation(
                 view.entityUuid,
                 view.position.y,
-                tweak.getConfig().getTranslationY(),
+                view.yawRadians,
+                view.profile,
                 translationY -> completeDisplaySwitch(
                         player, clientVersion, view, translationY, revision));
     }
@@ -261,17 +267,44 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
         Map<Integer, DropView> playerViews = views.get(player.getUniqueId());
         if (playerViews == null || playerViews.get(view.entityId) != view
                 || !player.isOnline() || view.displayed || !view.grounded
-                || view.itemStack == null || !tweak.isEnabled() || hasMovedSignificantly(view)) {
+                || view.itemStack == null || !tweak.isEnabled()
+                || hasMovedSignificantly(view, tweak.getConfig().getSettleEnterMovementThreshold())) {
             view.displaySwitchScheduled = false;
             return;
         }
+        view.profile = tweak.getModelProfile(view.entityUuid);
         view.groundTranslationY = translationY;
         view.displayed = true;
         view.displaySwitchScheduled = false;
         sendRespawn(player, view, EntityTypes.ITEM_DISPLAY);
+        int landingDuration = tweak.getConfig().getLandingDurationTicks();
         ItemDisplayMeta meta = DropDisplayMetadataFactory.create(
                 view.entityId, view.itemStack, view.yawRadians,
-                view.groundTranslationY, tweak.getConfig());
+                view.groundTranslationY, tweak.getConfig(), view.profile,
+                landingDuration > 0, 0);
+        PacketEvents.getAPI().getPlayerManager().sendPacketSilently(player,
+                new WrapperPlayServerEntityMetadata(view.entityId, meta.entityData(clientVersion)));
+        if (landingDuration > 0) {
+            SchedulerUtil.runTaskLater(
+                    () -> completeLanding(player, clientVersion, view, revision, landingDuration), 1);
+        }
+    }
+
+    private void completeLanding(Player player,
+                                 ClientVersion clientVersion,
+                                 DropView view,
+                                 long revision,
+                                 int landingDuration) {
+        Map<Integer, DropView> playerViews = views.get(player.getUniqueId());
+        if (revision != view.displayRevision || playerViews == null
+                || playerViews.get(view.entityId) != view || !player.isOnline()
+                || !view.displayed || !view.grounded || view.itemStack == null) {
+            return;
+        }
+        ItemDisplayMeta meta = DropDisplayMetadataFactory.create(
+                view.entityId, view.itemStack, view.yawRadians,
+                view.groundTranslationY, tweak.getConfig(), view.profile,
+                false, landingDuration);
         PacketEvents.getAPI().getPlayerManager().sendPacketSilently(player,
                 new WrapperPlayServerEntityMetadata(view.entityId, meta.entityData(clientVersion)));
     }
@@ -301,7 +334,7 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
         view.settleAnchor = null;
     }
 
-    private boolean hasMovedSignificantly(DropView view) {
+    private boolean hasMovedSignificantly(DropView view, float threshold) {
         Vector3d anchor = view.settleAnchor;
         if (anchor == null) {
             return false;
@@ -310,7 +343,6 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
         double x = position.x - anchor.x;
         double y = position.y - anchor.y;
         double z = position.z - anchor.z;
-        double threshold = tweak.getConfig().getSettleMovementThreshold();
         return x * x + y * y + z * z > threshold * threshold;
     }
 
@@ -397,15 +429,19 @@ final class BetterDropDisplayPacketListener extends PacketListenerAbstract {
 
         private volatile boolean grounded;
 
+        private volatile ModelProfile profile;
+
         private DropView(int entityId,
                          UUID entityUuid,
                          Vector3d position,
                          float yawRadians,
-                         boolean initiallyStationary) {
+                         boolean initiallyStationary,
+                         ModelProfile profile) {
             this.entityId = entityId;
             this.entityUuid = entityUuid;
             this.position = position;
             this.yawRadians = yawRadians;
+            this.profile = profile;
             this.grounded = initiallyStationary;
             this.settleAnchor = position;
         }
