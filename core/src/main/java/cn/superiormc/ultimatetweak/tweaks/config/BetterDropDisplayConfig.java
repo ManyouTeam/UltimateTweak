@@ -20,9 +20,17 @@ public class BetterDropDisplayConfig extends AbstractTweakConfig {
 
     private volatile float settleEnterMovementThreshold;
 
-    private volatile float settleExitMovementThreshold;
-
     private volatile int landingDurationTicks;
+
+    private volatile boolean tumbleEnabled;
+
+    private volatile float airborneTumbleDegreesPerBlock;
+
+    private volatile float groundRollDegreesPerBlock;
+
+    private volatile int motionInterpolationTicks;
+
+    private volatile int motionUpdateIntervalTicks;
 
     private volatile boolean labelEnabled;
 
@@ -43,11 +51,17 @@ public class BetterDropDisplayConfig extends AbstractTweakConfig {
         settleDelayTicks = Math.max(1, getInt("settling.delay-ticks", 10));
         float legacyThreshold = nonNegativeFloat("settling.movement-threshold", 0.03F);
         settleEnterMovementThreshold = nonNegativeFloat(
-                "settling.enter-movement-threshold", legacyThreshold);
-        settleExitMovementThreshold = nonNegativeFloat(
-                "settling.exit-movement-threshold", Math.max(legacyThreshold, 0.05F));
+                "settling.movement-threshold",
+                nonNegativeFloat("settling.enter-movement-threshold", legacyThreshold));
         landingDurationTicks = Math.max(0, getInt("render.landing-duration-ticks",
                 Math.max(0, getInt("render.interpolation-duration", 0))));
+        tumbleEnabled = getBoolean("motion.tumble", true);
+        airborneTumbleDegreesPerBlock = nonNegativeFloat(
+                "motion.airborne-degrees-per-block", 300.0F);
+        groundRollDegreesPerBlock = nonNegativeFloat(
+                "motion.ground-degrees-per-block", 360.0F);
+        motionInterpolationTicks = Math.max(0, getInt("motion.interpolation-ticks", 1));
+        motionUpdateIntervalTicks = Math.max(1, getInt("motion.update-interval-ticks", 1));
         labelEnabled = getBoolean("label.enabled", true);
         labelShowAmount = getBoolean("label.show-amount", true);
         labelFormat = getString("label.format", "{name} ×{amount}");
@@ -155,12 +169,28 @@ public class BetterDropDisplayConfig extends AbstractTweakConfig {
         return settleEnterMovementThreshold;
     }
 
-    public float getSettleExitMovementThreshold() {
-        return settleExitMovementThreshold;
-    }
-
     public int getLandingDurationTicks() {
         return landingDurationTicks;
+    }
+
+    public boolean isTumbleEnabled() {
+        return tumbleEnabled;
+    }
+
+    public float getAirborneTumbleDegreesPerBlock() {
+        return airborneTumbleDegreesPerBlock;
+    }
+
+    public float getGroundRollDegreesPerBlock() {
+        return groundRollDegreesPerBlock;
+    }
+
+    public int getMotionInterpolationTicks() {
+        return motionInterpolationTicks;
+    }
+
+    public int getMotionUpdateIntervalTicks() {
+        return motionUpdateIntervalTicks;
     }
 
     public boolean isLabelEnabled() {

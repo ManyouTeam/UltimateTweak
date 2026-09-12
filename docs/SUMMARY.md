@@ -27,7 +27,6 @@
 * [🌱Tree Replant](tweaks/tree-replant.md)
 * [⛏️Vein Mine](tweaks/vein-mine.md)
 * [🔦Dynamic Light](tweaks/dynamic-light.md)
-* [💎Better Drop Display](tweaks/better-drop-display.md)
 * [🚫Entity Vehicle Restriction](tweaks/entity-vehicle-restriction.md)
 * [🌍Biome Announcer](tweaks/biome-announcer.md)
 * [🏛️Structure Announcer](tweaks/structure-announcer.md)

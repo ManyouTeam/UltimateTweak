@@ -10,6 +10,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -73,6 +74,9 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
     }
 
     public void onBlockPlace(BlockPlaceEvent event) {
+    }
+
+    public void onChunkLoad(ChunkLoadEvent event) {
     }
 
     public void onPlayerInteract(PlayerInteractEvent event) {

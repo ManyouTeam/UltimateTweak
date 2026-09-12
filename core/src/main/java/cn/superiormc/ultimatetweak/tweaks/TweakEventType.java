@@ -7,6 +7,7 @@ public enum TweakEventType {
     BLOCK_BREAK,
     BLOCK_DROP_ITEM,
     BLOCK_PLACE,
+    CHUNK_LOAD,
     PLAYER_INTERACT,
     SWING_ITEM,
     NO_SWING_ITEM,

@@ -18,6 +18,7 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
+import org.bukkit.event.world.ChunkLoadEvent;
 
 import java.util.UUID;
 
@@ -55,6 +56,13 @@ public class TweakListener implements Listener {
     public void onBlockPlace(BlockPlaceEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.BLOCK_PLACE)) {
             TweakManager.tweakManager.call(tweak, event.getBlock().getWorld(), () -> tweak.onBlockPlace(event));
+        }
+    }
+
+    @EventHandler
+    public void onChunkLoad(ChunkLoadEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.CHUNK_LOAD)) {
+            TweakManager.tweakManager.call(tweak, event.getWorld(), () -> tweak.onChunkLoad(event));
         }
     }
 
