@@ -206,7 +206,7 @@ public class HookManager {
         return hookItem.getType().name().toLowerCase();
     }
 
-    public boolean getProtectionCanUse(Player player, Location location) {
+    public boolean getProtectionCanBreak(Player player, Location location) {
         if (player == null || player.isOp() || player.hasPermission("ultimatetweak.bypass.protection")) {
             return true;
         }

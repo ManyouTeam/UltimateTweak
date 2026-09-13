@@ -18,6 +18,15 @@ cooldown-ticks: 5
 # Fortune only receives this bonus when the item is a preferred tool for the block.
 fortune-multiplier-per-level: 1.5
 
+# Optional trigger filters. Leave both filters disabled to preserve the original behavior.
+trigger:
+  # Only switch when the selected tool mines this block faster than an empty hand.
+  require-effective-tool: false
+  # -1 disables the hardness filter. Vanilla examples: dirt 0.5, stone 1.5, obsidian 50.
+  min-block-hardness: -1.0
+  # any: either enabled filter may pass; all: every enabled filter must pass.
+  mode: any
+
 conditions: []
 
 # Executed after the held hotbar slot is changed.

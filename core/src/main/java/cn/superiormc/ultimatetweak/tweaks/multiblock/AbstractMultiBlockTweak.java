@@ -36,8 +36,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
-public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig, D>
-        extends AbstractTweak<C> {
+public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig, D> extends AbstractTweak<C> {
 
     private static final long NANOS_PER_TICK = 50_000_000L;
 
@@ -151,7 +150,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
             removeSession(session);
             return;
         }
-        blocks.removeIf(block -> !HookManager.hookManager.getProtectionCanUse(event.getPlayer(), block.getLocation()));
+        blocks.removeIf(block -> !HookManager.hookManager.getProtectionCanBreak(event.getPlayer(), block.getLocation()));
         if (blocks.isEmpty()) {
             removeSession(session);
             return;
@@ -239,7 +238,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         if (!getConfig().getConditions().getAllBoolean(player)) {
             return false;
         }
-        if (!HookManager.hookManager.getProtectionCanUse(player, location)) {
+        if (!HookManager.hookManager.getProtectionCanBreak(player, location)) {
             return false;
         }
         return !getConfig().hasTriggerItem() || MatchItemManager.matchItemManager.getMatch(
@@ -256,7 +255,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
 
     protected final boolean breakBlock(Player player, MultiBlockSession session, Block block, boolean naturally) {
         LocationKey key = LocationKey.of(block);
-        if (!HookManager.hookManager.getProtectionCanUse(player, block.getLocation())) {
+        if (!HookManager.hookManager.getProtectionCanBreak(player, block.getLocation())) {
             session.blockOperations.remove(key);
             return false;
         }

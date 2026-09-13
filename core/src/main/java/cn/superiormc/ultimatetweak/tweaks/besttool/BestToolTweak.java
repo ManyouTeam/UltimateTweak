@@ -68,12 +68,17 @@ public class BestToolTweak extends AbstractTweak<BestToolConfig> {
         if (!getConfig().getConditions().getAllBoolean(player)) {
             return;
         }
+        PlayerInventory inventory = player.getInventory();
+        int currentSlot = inventory.getHeldItemSlot();
+        Block block = event.getBlock();
+        int bestSlot = getBestSlot(player, block);
+        ItemStack bestTool = inventory.getItem(bestSlot);
+        if (!matchesConfiguredTrigger(block, bestTool)) {
+            return;
+        }
         if (!canDetect(player.getUniqueId())) {
             return;
         }
-        PlayerInventory inventory = player.getInventory();
-        int currentSlot = inventory.getHeldItemSlot();
-        int bestSlot = getBestSlot(player, event.getBlock());
         if (bestSlot == currentSlot) {
             return;
         }
@@ -165,6 +170,35 @@ public class BestToolTweak extends AbstractTweak<BestToolConfig> {
             score *= Math.pow(getConfig().getFortuneMultiplierPerLevel(), fortuneLevel);
         }
         return score;
+    }
+
+    private boolean matchesConfiguredTrigger(Block block, ItemStack bestTool) {
+        boolean requireEffectiveTool = getConfig().shouldRequireEffectiveTool();
+        double minimumHardness = getConfig().getMinimumBlockHardness();
+        boolean effectiveTool = isEffectiveTool(block, bestTool);
+        boolean hardnessMatches = minimumHardness < 0.0D
+                || block.getType().getHardness() + SCORE_EPSILON >= minimumHardness;
+        return matchesTrigger(requireEffectiveTool, minimumHardness,
+                getConfig().shouldMatchAnyTrigger(), effectiveTool, hardnessMatches);
+    }
+
+    private boolean isEffectiveTool(Block block, ItemStack item) {
+        ItemStack tool = item == null ? new ItemStack(Material.AIR) : item;
+        double handSpeed = UltimateTweak.methodUtil.getDestroySpeed(block, new ItemStack(Material.AIR));
+        double toolSpeed = UltimateTweak.methodUtil.getDestroySpeed(block, tool);
+        return toolSpeed > handSpeed + SCORE_EPSILON;
+    }
+
+    static boolean matchesTrigger(boolean requireEffectiveTool, double minimumHardness,
+                                  boolean matchAny, boolean effectiveTool, boolean hardnessMatches) {
+        boolean hardnessEnabled = minimumHardness >= 0.0D;
+        if (!requireEffectiveTool && !hardnessEnabled) {
+            return true;
+        }
+        if (matchAny) {
+            return requireEffectiveTool && effectiveTool || hardnessEnabled && hardnessMatches;
+        }
+        return (!requireEffectiveTool || effectiveTool) && (!hardnessEnabled || hardnessMatches);
     }
 
     private record PlayerCache(int inventorySignature, Map<String, Integer> bestSlots) {

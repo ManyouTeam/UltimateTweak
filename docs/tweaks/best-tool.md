@@ -22,6 +22,11 @@ cooldown-ticks: 5
 # Fortune only receives this bonus when the item is a preferred tool for the block.
 fortune-multiplier-per-level: 1.5
 
+trigger:
+  require-effective-tool: false
+  min-block-hardness: -1.0
+  mode: any
+
 conditions: []
 
 # Executed after the held hotbar slot is changed.
@@ -33,6 +38,9 @@ switch-actions: []
 * `search-scope`: `hotbar` searches slots 0-8; `inventory` searches the whole player storage inventory.
 * `cooldown-ticks`: minimum interval between checks for the same player.
 * `fortune-multiplier-per-level`: Fortune level multiplier used when scoring candidate tools.
+* `trigger.require-effective-tool`: only triggers when the selected candidate is faster than an empty hand for that block.
+* `trigger.min-block-hardness`: minimum block hardness required; `-1` disables this filter.
+* `trigger.mode`: `any` accepts either enabled trigger filter; `all` requires every enabled filter.
 * `conditions`: conditions that must pass to active this tweak. Should use [Condition Format](../format/condition-format.md) here.
 * `switch-actions`: actions executed after the held slot changes. Should use [Action Format](../format/action-format.md) here.
 

@@ -1,7 +1,9 @@
 package cn.superiormc.ultimatetweak.hooks.protection;
 
 import com.bekvon.bukkit.residence.Residence;
+import com.bekvon.bukkit.residence.containers.Flags;
 import com.bekvon.bukkit.residence.containers.ResidencePlayer;
+import com.bekvon.bukkit.residence.protection.FlagPermissions;
 import com.bekvon.bukkit.residence.protection.ResidenceManager;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;

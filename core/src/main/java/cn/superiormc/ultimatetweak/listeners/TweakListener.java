@@ -14,6 +14,7 @@ import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
+import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -95,6 +96,14 @@ public class TweakListener implements Listener {
     public void onItemSpawn(ItemSpawnEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ITEM_SPAWN)) {
             TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(), () -> tweak.onItemSpawn(event));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onEntityPickupItem(EntityPickupItemEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_PICKUP_ITEM)) {
+            TweakManager.tweakManager.call(tweak, event.getItem().getWorld(),
+                    () -> tweak.onEntityPickupItem(event));
         }
     }
 

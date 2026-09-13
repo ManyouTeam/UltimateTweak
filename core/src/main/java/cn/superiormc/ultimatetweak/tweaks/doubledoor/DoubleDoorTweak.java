@@ -60,7 +60,7 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
         }
 
         Block clickedBlock = event.getClickedBlock();
-        if (!HookManager.hookManager.getProtectionCanUse(player, clickedBlock.getLocation())) {
+        if (!HookManager.hookManager.getProtectionCanBreak(player, clickedBlock.getLocation())) {
             return;
         }
         BlockData clickedData = clickedBlock.getBlockData();

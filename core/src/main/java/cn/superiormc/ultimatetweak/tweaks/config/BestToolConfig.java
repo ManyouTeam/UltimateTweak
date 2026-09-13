@@ -41,4 +41,16 @@ public class BestToolConfig extends AbstractTweakConfig {
     public int getCooldownTicks() {
         return Math.max(0, getInt("cooldown-ticks", 5));
     }
+
+    public boolean shouldRequireEffectiveTool() {
+        return getBoolean("trigger.require-effective-tool", false);
+    }
+
+    public double getMinimumBlockHardness() {
+        return getDouble("trigger.min-block-hardness", -1.0D);
+    }
+
+    public boolean shouldMatchAnyTrigger() {
+        return !"all".equalsIgnoreCase(getString("trigger.mode", "any"));
+    }
 }
