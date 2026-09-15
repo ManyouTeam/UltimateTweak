@@ -9,6 +9,7 @@ public enum TweakEventType {
     BLOCK_PLACE,
     CHUNK_LOAD,
     PLAYER_INTERACT,
+    PLAYER_MOVE,
     SWING_ITEM,
     NO_SWING_ITEM,
     PLAYER_JOIN,

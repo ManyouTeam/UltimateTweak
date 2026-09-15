@@ -3,6 +3,7 @@ package cn.superiormc.ultimatetweak.managers;
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.utils.TextUtil;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
@@ -196,7 +197,7 @@ public class LanguageManager {
         }
     }
 
-    private void mergeMissingKeys(YamlConfiguration target, YamlConfiguration source) {
+    private void mergeMissingKeys(ConfigurationSection target, ConfigurationSection source) {
         for (String key : source.getKeys(true)) {
             if (source.isConfigurationSection(key)) {
                 continue;
@@ -204,6 +205,23 @@ public class LanguageManager {
             if (target.get(key) == null) {
                 target.set(key, source.get(key));
             }
+        }
+    }
+
+    /**
+     * Adds language defaults supplied by an expansion without overwriting server customizations.
+     */
+    public void registerLanguageDefaults(String language, ConfigurationSection defaults) {
+        if (language == null || defaults == null) {
+            return;
+        }
+        String normalized = language.replace('-', '_').toLowerCase();
+        YamlConfiguration target = languageFiles.get(normalized);
+        if (target != null) {
+            mergeMissingKeys(target, defaults);
+        }
+        if ("en_us".equals(normalized)) {
+            mergeMissingKeys(tempMessageFile, defaults);
         }
     }
 }

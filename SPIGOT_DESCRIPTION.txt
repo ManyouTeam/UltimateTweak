@@ -1,0 +1,179 @@
+[CENTER][URL='https://discord.gg/RZajEybhBw'][B]Discord Support[/B][/URL] | [URL='https://simple.superiormc.cn/ultimatetweak-wiki'][B]Documentation[/B][/URL] | [URL='https://github.com/ManyouTeam/UltimateTweak'][B]GitHub[/B][/URL]
+
+[IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/TreeCutter.gif[/IMG][/CENTER]
+
+[SIZE=6][B]UltimateTweak[/B][/SIZE]
+[I]A powerful, modular, and highly customizable quality-of-life plugin for modern Minecraft servers.[/I]
+
+UltimateTweak is an [B]advanced gameplay enhancement framework[/B] for Spigot, Paper, and Folia, built to improve everyday survival gameplay without forcing server owners into a fixed setup.
+
+Every tweak has its own configuration file and can be [B]enabled, disabled, and customized independently[/B]. From automatic tool selection and vein mining to animated tree cutting, dynamic lighting, biome and structure announcements, automatic structure protection, and custom automation, UltimateTweak gives you full control over how each feature behaves.
+
+Unlike basic tweak plugins, UltimateTweak focuses on [B]deep configuration, custom-item compatibility, protection support, and reusable action and condition systems[/B], allowing every feature to fit naturally into your server.
+
+[SIZE=5][B]Features[/B][/SIZE]
+
+[SIZE=4][B]Animated Tree Cutter[/B][/SIZE]
+[LIST]
+[*]Detect and cut entire trees with one configurable mining process
+[*]Built-in [B]falling-tree animation[/B] with configurable direction, duration, glow, and view distance
+[*]Optional falling-tree damage for nearby players and entities
+[*]Configurable mining time based on the number of logs in the tree
+[*]Optionally break leaves when the player uses a matching item
+[*]Run custom actions while damaging the tree or after it is completely cut
+[*]Includes definitions for common Overworld trees, Nether fungi, and custom-tree examples
+[*]Create custom tree definitions with configurable logs, leaves, radius, height, and size limits
+[*]Built-in debug command helps explain why a tree definition passes or fails
+[/LIST]
+
+[CENTER][IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/TreeCutter.gif[/IMG][/CENTER]
+
+[SIZE=4][B]Vein Mining[/B][/SIZE]
+[LIST]
+[*]Mine connected ore veins in one operation
+[*]Configure which tools and blocks can trigger each vein-mining rule
+[*]Supports diagonally connected blocks and configurable search limits
+[*]Configurable mining-time scaling keeps large veins balanced
+[*]Use glow effects to preview the blocks being mined
+[*]Supports custom actions, conditions, custom tools, and custom blocks
+[/LIST]
+
+[CENTER][IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/VeinMine.gif[/IMG][/CENTER]
+
+[SIZE=4][B]Best Tool Selection[/B][/SIZE]
+[LIST]
+[*]Automatically selects the most effective tool for the block being mined
+[*]Choose whether to search the player's [B]hotbar or entire inventory[/B]
+[*]Scores tools using destroy speed, Efficiency, preferred-tool status, and Fortune
+[*]Configure detection cooldowns and Fortune scoring behavior
+[*]Supports custom conditions and actions after switching tools
+[/LIST]
+
+[CENTER][IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/BestTools.gif[/IMG][/CENTER]
+
+[SIZE=4][B]Dynamic Light[/B][/SIZE]
+[LIST]
+[*]Creates real-time light near players based on held items
+[*]Checks both the main hand and off hand
+[*]Configure independent item-matching rules and light levels from 0 to 15
+[*]Supports vanilla items, saved items, advanced item rules, and many custom-item plugins
+[/LIST]
+
+[CENTER][IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/DynamicLight.gif[/IMG][/CENTER]
+
+[SIZE=4][B]Biome Announcer[/B][/SIZE]
+[LIST]
+[*]Notify players when they enter a new biome
+[*]Configure which biomes should trigger announcements, or leave the list empty to support all biomes
+[*]Use global or per-biome messages, including ready-to-use Terralith biome examples
+[*]Supports custom conditions and actions when the player's biome changes
+[*]Provides placeholders such as [B]{biome}[/B], [B]{from-biome}[/B], [B]{to-biome}[/B], and translated biome names on Paper
+[/LIST]
+
+[CENTER][IMG]https://raw.githubusercontent.com/ManyouTeam/UltimateTweak/refs/heads/master/show/BiomeAnnouncer.gif[/IMG][/CENTER]
+
+[SIZE=4][B]Automatic Tree Replanting[/B][/SIZE]
+[LIST]
+[*]Automatically plants dropped saplings when they land on valid soil
+[*]Configure sapling items, placed blocks, valid soils, check intervals, and wait times
+[*]Includes ready-to-use rules for common Overworld trees, mangroves, azaleas, and more
+[*]Supports custom saplings and custom blocks for deeply customized servers
+[/LIST]
+
+[SIZE=4][B]Structure Announcer[/B][/SIZE]
+[LIST]
+[*]Notify players when they enter generated structures such as villages, monuments, mineshafts, trial chambers, and more
+[*]Configure which structures should trigger announcements, or leave the list empty to support all structures
+[*]Supports namespaced IDs such as [B]minecraft:village_plains[/B] and datapack structure IDs
+[*]Use global or per-structure messages, with built-in examples for vanilla and Terralith structures
+[*]Run custom conditions and actions when entering a structure, with placeholders such as [B]{structure}[/B], [B]{from-structure}[/B], and [B]{to-structure}[/B]
+[/LIST]
+
+[SIZE=4][B]Structure Auto Protection[/B][/SIZE]
+[LIST]
+[*]Automatically creates protection regions for generated structures around online players
+[*]Uses each structure's real bounding box and supports configurable vertical expansion
+[*]Choose the protection hook used to create regions, including supported region protection plugins
+[*]Configure structure filters, scan intervals, generated region ID prefixes, and debug output
+[*]Helps protect villages, dungeons, ruins, and custom datapack structures without manual region setup
+[/LIST]
+
+[SIZE=4][B]Entity Vehicle Restriction[/B][/SIZE]
+[LIST]
+[*]Prevent matched living entities from entering boats or minecarts
+[*]Enable restrictions independently for supported vehicle types
+[*]Use advanced entity matching to target only the mobs your server needs
+[*]Supports vanilla entities and integrations such as MythicMobs and LevelledMobs
+[/LIST]
+
+[SIZE=4][B]Modular Configuration[/B][/SIZE]
+[LIST]
+[*]Every tweak has its own clean configuration file and independent enabled option
+[*]Enable only the gameplay improvements that fit your server
+[*]Configure cooldowns, triggers, matching rules, structure and biome filters, limits, animations, effects, and behavior
+[*]Reload the main config, tweaks, tree definitions, saved items, and languages with one command
+[*]Includes English and Simplified Chinese language files
+[/LIST]
+
+[SIZE=4][B]Powerful Item & Block Compatibility[/B][/SIZE]
+[LIST]
+[*]Direct custom-item support for [B]ItemsAdder, Oraxen, Nexo, MMOItems, EcoItems, EcoArmor, MythicMobs, ExecutableItems, CraftEngine, NeigeItems, eco[/B], and more
+[*]Custom-block support for [B]CraftEngine, Oraxen, Nexo, ItemsAdder[/B], and vanilla blocks
+[*]Save items in-game and reuse them in configuration files
+[*]Generate detailed ItemFormat data directly from the item in your hand
+[*]Advanced item matching supports materials, tags, names, lore, enchantments, rarity, saved items, ItemFormat, NBT, and logical rules
+[/LIST]
+
+[SIZE=4][B]Protection Plugin Support[/B][/SIZE]
+[LIST]
+[*]Automatically respects supported region and claim protection plugins
+[*]Supports [B]WorldGuard, Residence, Towny, Lands, PlotSquared, GriefPrevention, HuskClaims, HuskTowns, Dominion, SuperiorSkyblock2, and BentoBox[/B]
+[*]Includes a dedicated bypass permission for trusted players and administrators
+[/LIST]
+
+[SIZE=4][B]Action & Condition Engine[/B][/SIZE]
+[LIST]
+[*]Add custom behavior to supported tweaks without writing code
+[*]Conditions can check [B]biomes, permissions, placeholders, worlds, ANY logic, and NOT logic[/B]
+[*]Actions support [B]messages, titles, action bars, particles, sounds, effects, commands, teleporting, entity spawning, item drops, item giving, chance, delay, and conditional execution[/B]
+[*]Combine reusable rules to make each tweak behave differently for specific players, worlds, or situations
+[/LIST]
+
+[SIZE=4][B]Entity Matching System[/B][/SIZE]
+[LIST]
+[*]Match entities by type, name, health, scoreboard tags, persistent data, monster status, range, and logical rules
+[*]Additional matching rules are registered automatically when supported mob plugins are installed
+[*]Useful for precise vehicle restrictions and custom action setups
+[/LIST]
+
+[SIZE=4][B]Built-in Utility Commands[/B][/SIZE]
+[LIST]
+[*][B]/ut reload[/B] - Reload UltimateTweak configuration files
+[*][B]/ut saveitem[/B] - Save the item in your main hand
+[*][B]/ut givesaveitem[/B] - Give a previously saved item
+[*][B]/ut generateitemformat[/B] - Generate the held item's detailed ItemFormat
+[*][B]/ut debug[/B] - Diagnose custom tree recognition
+[/LIST]
+
+[SIZE=5][B]Requirements & Compatibility[/B][/SIZE]
+[LIST]
+[*]Supports [B]Spigot, Paper, and Folia[/B]
+[*]Built against modern Paper 1.21.x APIs
+[*][B]Required dependency:[/B] PacketEvents
+[*]Folia support is currently experimental
+[*]Other Minecraft versions may work, but should be tested before production use
+[/LIST]
+
+[SIZE=5][B]Why UltimateTweak?[/B][/SIZE]
+[LIST]
+[*]Replace multiple small quality-of-life plugins with one modular system
+[*]Keep every feature optional and independently configurable
+[*]Build advanced behavior with matching rules, conditions, and actions
+[*]Integrate naturally with custom items, custom blocks, mobs, and protection plugins
+[*]Create a smoother survival experience while keeping full control over balance
+[/LIST]
+
+[CENTER][B]Improve the small moments that players repeat every day.
+Build your server's perfect survival experience with UltimateTweak.[/B]
+
+[URL='https://discord.gg/RZajEybhBw'][B]Discord Support[/B][/URL] | [URL='https://simple.superiormc.cn/ultimatetweak-wiki'][B]Documentation[/B][/URL] | [URL='https://github.com/ManyouTeam/UltimateTweak'][B]GitHub[/B][/URL][/CENTER]

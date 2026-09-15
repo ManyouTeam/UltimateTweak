@@ -14,6 +14,7 @@ import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
@@ -81,6 +82,9 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
     }
 
     public void onPlayerInteract(PlayerInteractEvent event) {
+    }
+
+    public void onPlayerMove(PlayerMoveEvent event) {
     }
 
     public void onSwingItem(UUID playerId) {

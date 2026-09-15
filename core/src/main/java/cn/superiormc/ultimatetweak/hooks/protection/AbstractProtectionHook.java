@@ -11,6 +11,8 @@ public abstract class AbstractProtectionHook {
         this.pluginName = pluginName;
     }
 
+    public abstract boolean canUse(Player player, Location location);
+
     public abstract boolean canBreak(Player player, Location location);
 
     public abstract ProtectionRegionResult createRegion(ProtectionRegion region);

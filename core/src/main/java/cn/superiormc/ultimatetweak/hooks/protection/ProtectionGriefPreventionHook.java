@@ -15,6 +15,16 @@ public class ProtectionGriefPreventionHook extends AbstractProtectionHook {
     }
 
     @Override
+    public boolean canUse(Player player, Location location) {
+        PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId());
+        Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, false, null);
+        if (claim == null || playerData.ignoreClaims) {
+            return true;
+        }
+        return claim.checkPermission(player, ClaimPermission.Inventory, null) == null;
+    }
+
+    @Override
     public boolean canBreak(Player player, Location location) {
         PlayerData playerData = GriefPrevention.instance.dataStore.getPlayerData(player.getUniqueId());
         Claim claim = GriefPrevention.instance.dataStore.getClaimAt(location, false, null);

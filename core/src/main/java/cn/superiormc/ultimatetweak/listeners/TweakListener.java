@@ -17,6 +17,7 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
@@ -71,6 +72,14 @@ public class TweakListener implements Listener {
     public void onPlayerInteract(PlayerInteractEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_INTERACT)) {
             TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(), () -> tweak.onPlayerInteract(event));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_MOVE)) {
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(),
+                    () -> tweak.onPlayerMove(event));
         }
     }
 

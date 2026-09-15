@@ -72,13 +72,42 @@ public class TweakManager {
         registerTweak(new StructureAutoProtectTweak(new StructureAutoProtectConfig(new File(dir, "structure-auto-protect.yml"))));
     }
 
-    private void registerTweak(AbstractTweak<?> tweak) {
+    private boolean addTweak(AbstractTweak<?> tweak) {
         if (tweakMap.containsKey(tweak.getId())) {
             ErrorManager.errorManager.sendErrorMessage("§cError: Already loaded a tweak called: " + tweak.getId() + "!");
-            return;
+            return false;
         }
         TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fLoaded tweak " + tweak.getId() + "!");
         tweakMap.put(tweak.getId(), tweak);
+        return true;
+    }
+
+    private void registerTweak(AbstractTweak<?> tweak) {
+        addTweak(tweak);
+    }
+
+    /**
+     * Registers a tweak supplied by a plugin that depends on UltimateTweak.
+     */
+    public boolean registerExternalTweak(AbstractTweak<?> tweak) {
+        if (tweak == null || !addTweak(tweak)) {
+            return false;
+        }
+        call(tweak, tweak::onLoad);
+        rebuildEventTweakMap();
+        return true;
+    }
+
+    /**
+     * Removes and shuts down a previously registered external tweak.
+     */
+    public boolean unregisterExternalTweak(AbstractTweak<?> tweak) {
+        if (tweak == null || !tweakMap.remove(tweak.getId(), tweak)) {
+            return false;
+        }
+        callEvenDisabled(tweak, tweak::onDisable);
+        rebuildEventTweakMap();
+        return true;
     }
 
     private void rebuildEventTweakMap() {
