@@ -16,9 +16,12 @@ import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 
@@ -76,10 +79,34 @@ public class TweakListener implements Listener {
     }
 
     @EventHandler(ignoreCancelled = true)
+    public void onPlayerItemHeld(PlayerItemHeldEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_ITEM_HELD)) {
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(),
+                    () -> tweak.onPlayerItemHeld(event));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
     public void onPlayerMove(PlayerMoveEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_MOVE)) {
             TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(),
                     () -> tweak.onPlayerMove(event));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_SWAP_HAND_ITEMS)) {
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(),
+                    () -> tweak.onPlayerSwapHandItems(event));
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true)
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.PLAYER_TOGGLE_SNEAK)) {
+            TweakManager.tweakManager.call(tweak, event.getPlayer().getWorld(),
+                    () -> tweak.onPlayerToggleSneak(event));
         }
     }
 

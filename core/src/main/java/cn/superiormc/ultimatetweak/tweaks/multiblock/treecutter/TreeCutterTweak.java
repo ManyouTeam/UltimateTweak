@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.tweaks.multiblock.treecutter;
 
-import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager.SnapshotBlock;
 import cn.superiormc.ultimatetweak.managers.TreeDetermineManager.TreeDetectionResult;
@@ -60,7 +59,7 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
         TreeDetectionResult result = session.data();
         World world = result.snapshot().world();
         boolean breakLeaves = getConfig().shouldBreakLeaves(player);
-        boolean playAnimation = getConfig().isAnimationEnabled() && UltimateTweak.isEntityLibAvailable();
+        boolean playAnimation = getConfig().isAnimationEnabled();
         List<TreeBlockDisplayAnimation.AnimationBlock> animationBlocks = new ArrayList<>();
         TreeBlockDisplayAnimation.AnimationSession animationSession = null;
 
@@ -72,21 +71,21 @@ public class TreeCutterTweak extends AbstractMultiBlockTweak<TreeCutterConfig, T
                     world,
                     result.getLowestLogBlock(),
                     animationBlocks,
-                    getConfig().getAnimationDurationTicks(),
-                    getConfig().getAnimationIntervalTicks(),
+                    getConfig().getAnimationDurationTicks(player),
+                    getConfig().getAnimationIntervalTicks(player),
                     getConfig().isAnimationGlowEnabled(),
                     getConfig().getAnimationGlowColor(),
-                    getConfig().getAnimationViewDistance(),
+                    getConfig().getAnimationViewDistance(player),
                     getConfig().getAnimationDirection(),
                     player.getLocation().getDirection(),
                     new TreeBlockDisplayAnimation.FallDamageOptions(
                             getConfig().isFallDamageEnabled(),
                             getConfig().shouldFallDamagePlayers(),
                             getConfig().shouldFallDamageEntities(),
-                            getConfig().getFallDamageAmount(),
-                            getConfig().getFallDamageMinAngle(),
-                            getConfig().getFallDamageHitRadius(),
-                            getConfig().getFallDamageCheckIntervalTicks()));
+                            getConfig().getFallDamageAmount(player),
+                            getConfig().getFallDamageMinAngle(player),
+                            getConfig().getFallDamageHitRadius(player),
+                            getConfig().getFallDamageCheckIntervalTicks(player)));
         }
 
         Set<LocationKey> dropKeys = new HashSet<>();

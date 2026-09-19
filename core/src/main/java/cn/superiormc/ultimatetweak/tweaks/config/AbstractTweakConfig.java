@@ -1,9 +1,12 @@
 package cn.superiormc.ultimatetweak.tweaks.config;
 
+import cn.superiormc.ultimatetweak.utils.MathUtil;
+import cn.superiormc.ultimatetweak.utils.TextUtil;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.MemoryConfiguration;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.util.Collections;
@@ -60,16 +63,29 @@ public abstract class AbstractTweakConfig {
         return getBoolean("enabled", true);
     }
 
+    public String getPermission() {
+        return getString("permission", "").trim();
+    }
+
     public boolean getBoolean(String path, boolean defaultValue) {
         return config.getBoolean(path, defaultValue);
     }
 
     public int getInt(String path, int defaultValue) {
-        return config.getInt(path, defaultValue);
+        return getInt(path, defaultValue, null);
+    }
+
+    public int getInt(String path, int defaultValue, Player player) {
+        return (int) getDouble(path, defaultValue, player);
     }
 
     public double getDouble(String path, double defaultValue) {
-        return config.getDouble(path, defaultValue);
+        return getDouble(path, defaultValue, null);
+    }
+
+    public double getDouble(String path, double defaultValue, Player player) {
+        String value = config.getString(path, String.valueOf(defaultValue));
+        return MathUtil.doCalculate(TextUtil.withPAPI(value, player));
     }
 
     public String getString(String path, String defaultValue) {

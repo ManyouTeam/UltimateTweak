@@ -10,6 +10,8 @@ worlds:
   mode: blacklist
   list: []
 
+permission: "ultimatetweak.dynamic-light"
+
 # How often held items and the player's position are checked.
 check-interval-ticks: 2
 
@@ -36,6 +38,8 @@ rules:
 {% endcode %}
 
 Each rule contains `match-item` and `light-level`. Light levels are clamped between `0` and `15`, and both hands are checked.
+
+`permission` is required to create dynamic light. Leave it blank to disable the permission check.
 
 For `match-item` option, should use [Match Item Format](../format/match-item-format.md) here.
 

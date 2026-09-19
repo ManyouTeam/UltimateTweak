@@ -14,6 +14,8 @@ worlds:
   mode: blacklist
   list: []
 
+permission: "ultimatetweak.vein-mine"
+
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
 
@@ -66,6 +68,12 @@ mining-time:
   percent-per-block: 100.0
   max-percent: 5000.0
 
+# Deduct this many food points each time Vein Mine activates.
+# One hunger icon equals 2 food points. The tweak will not activate if the player has too little food.
+hunger-cost:
+  enabled: false
+  amount: 1
+
 damage-actions: []
 
 break-actions: []
@@ -74,10 +82,14 @@ conditions: []
 ```
 {% endcode %}
 
+All numeric options support PlaceholderAPI placeholders and mathematical expressions. Values containing placeholders or formulas should be quoted as YAML strings.
+
+* `permission`: permission required to use Vein Mine. Leave it blank to disable the permission check.
 * `require-shift`: requires sneaking by default.
 * `search.diagonal`: includes diagonally touching blocks in the same vein.
 * `search.max-blocks`: maximum blocks handled in one operation.
 * `mining-time`: increases mining time for additional blocks.
+* `hunger-cost`: when enabled, requires and deducts `amount` food points each time Vein Mine activates. One hunger icon equals 2 food points.
 * `break-actions`: Supported placeholders:
   * `{block}`
   * `{block-amount}`

@@ -1,5 +1,7 @@
 # 🌍Biome Announcer
 
+The configured `permission` is required to receive biome announcements. Leave it blank to disable the permission check.
+
 ## Config
 
 ```yaml
@@ -8,6 +10,8 @@ enabled: true
 worlds:
   mode: blacklist
   list: []
+
+permission: "ultimatetweak.biome-announcer"
 
 # Empty list means all biomes.
 # Supports names like plains or minecraft:plains.

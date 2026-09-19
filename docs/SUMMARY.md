@@ -32,6 +32,17 @@
 * [🏛️Structure Announcer](tweaks/structure-announcer.md)
 * [🛡️Structure Auto Protect](tweaks/structure-auto-protect.md)
 
+## 💠TweakExpansion Tweaks
+
+* [🪜Auto Ladder](tweaks/auto-ladder.md)
+* [📦Better Drop Display](tweaks/better-drop-display.md)
+* [✨Block Highlighter](tweaks/block-highlighter.md)
+* [👁️Container Preview](tweaks/container-preview.md)
+* [↕️Elevator](tweaks/elevator.md)
+* [🧭Guide](tweaks/guide.md)
+* [🪽Multi Armor](tweaks/multi-armor.md)
+* [🏹Projectile Prediction](tweaks/projectile-prediction.md)
+
 ## ✨Features
 
 * [🌏Advanced Language Managment](features/advanced-language-managment.md)

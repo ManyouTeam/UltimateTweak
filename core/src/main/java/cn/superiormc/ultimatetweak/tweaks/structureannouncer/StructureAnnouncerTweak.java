@@ -98,7 +98,7 @@ public class StructureAnnouncerTweak extends AbstractTweak<StructureAnnouncerCon
             lastStructures.remove(player.getUniqueId());
             return;
         }
-        if (!isWorldEnabled(player.getWorld())) {
+        if (!isWorldEnabled(player.getWorld()) || !hasTweakPermission(player)) {
             lastStructures.remove(player.getUniqueId());
             return;
         }

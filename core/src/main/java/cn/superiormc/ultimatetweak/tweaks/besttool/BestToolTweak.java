@@ -65,7 +65,7 @@ public class BestToolTweak extends AbstractTweak<BestToolConfig> {
     @Override
     public void onBlockDamage(BlockDamageEvent event) {
         Player player = event.getPlayer();
-        if (!getConfig().getConditions().getAllBoolean(player)) {
+        if (!hasTweakPermission(player) || !getConfig().getConditions().getAllBoolean(player)) {
             return;
         }
         PlayerInventory inventory = player.getInventory();

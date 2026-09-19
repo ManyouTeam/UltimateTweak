@@ -30,6 +30,7 @@ tree-debug:
   unlimited: "unlimited"
 
 dupe-removed: "&#98FB98[UltimateTweak] &fA illegal item from your inventory has been removed!"
+multiblock-hunger-insufficient: "&#98FB98[UltimateTweak] &cYou need at least &e{required} &cfood points to use this feature. Current: &e{current}&c."
 
 override-lang:
   structure-announcer: "{structure}"

@@ -26,7 +26,7 @@ public class MainCommandTab implements TabCompleter {
             AbstractCommand tempVal2 = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
             if (tempVal2 != null && tempVal2.getRequiredPermission() != null && sender.hasPermission(tempVal2.getRequiredPermission())) {
                 AbstractCommand object = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
-                tempVal1 = object.filterTabResult(args, (Player) sender);
+                tempVal1 = object.filterTabResult(args, sender instanceof Player ? (Player) sender : null);
             }
         }
         return tempVal1;

@@ -13,7 +13,7 @@
     </parent>
 
     <build>
-        <finalName>${name}-${revision}</finalName>
+        <finalName>${name}-${revision}-${edition}</finalName>
         <resources>
             <resource>
                 <directory>src/main/resources</directory>
@@ -56,4 +56,18 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
+
+    <profiles>
+        <profile>
+            <id>premium</id>
+            <dependencies>
+                <!-- Present only when the sibling private repository is available. -->
+                <dependency>
+                    <groupId>cn.superiormc.ultimatetweak</groupId>
+                    <artifactId>tweak-expansion</artifactId>
+                    <version>${project.version}</version>
+                </dependency>
+            </dependencies>
+        </profile>
+    </profiles>
 </project>

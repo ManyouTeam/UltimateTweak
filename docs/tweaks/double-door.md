@@ -3,7 +3,6 @@
 Double Door opens or closes adjacent matching doors together. Its optional display animation can also be applied to a single door.
 
 {% hint style="info" %}
-Door pairing works on Spigot, but display animations are disabled. On Spigot, `animation.single-door` therefore has no effect.
 {% endhint %}
 
 ## Config
@@ -16,6 +15,8 @@ worlds:
   mode: blacklist
   list: []
 
+permission: "ultimatetweak.double-door"
+
 animation:
   enabled: true
   single-door: false
@@ -27,6 +28,7 @@ conditions: []
 ```
 {% endcode %}
 
+* `permission`: permission required to use Double Door. Leave it blank to disable the permission check.
 * `animation.enabled`: enables the display-entity door animation.
 * `animation.single-door`: also animates doors that do not have an adjacent matching door.
 * `animation.duration-ticks`: total animation duration.

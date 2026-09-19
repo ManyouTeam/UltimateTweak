@@ -6,6 +6,9 @@ worlds:
   mode: blacklist
   list: []
 
+# Leave blank to allow every player to create dynamic light.
+permission: "ultimatetweak.dynamic-light"
+
 # How often held items and the player's position are checked.
 check-interval-ticks: 2
 

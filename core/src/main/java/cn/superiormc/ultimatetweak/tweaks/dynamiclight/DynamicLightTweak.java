@@ -133,7 +133,7 @@ public class DynamicLightTweak extends AbstractTweak<DynamicLightConfig> {
     }
 
     private void updateLight(Player player) {
-        if (!player.isOnline()) {
+        if (!player.isOnline() || !hasTweakPermission(player)) {
             removePlayerLight(player.getUniqueId());
             return;
         }

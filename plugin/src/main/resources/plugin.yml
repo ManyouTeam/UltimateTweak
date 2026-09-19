@@ -43,3 +43,55 @@ commands:
       - "ut"
     usage: "/ultimatetweak"
     description: "UltimateTweak Main Command."
+permissions:
+  ultimatetweak.best-tool:
+    description: "Allows automatic best-tool selection."
+    default: true
+  ultimatetweak.double-door:
+    description: "Allows opening and closing matching doors together."
+    default: true
+  ultimatetweak.tree-cutter:
+    description: "Allows using Tree Cutter."
+    default: true
+  ultimatetweak.vein-mine:
+    description: "Allows using Vein Mine."
+    default: true
+  ultimatetweak.dynamic-light:
+    description: "Allows creating dynamic light from held items."
+    default: true
+  ultimatetweak.biome-announcer:
+    description: "Allows receiving biome announcements."
+    default: true
+  ultimatetweak.structure-announcer:
+    description: "Allows receiving structure announcements."
+    default: true
+  ultimatetweak.container-preview:
+    description: "Allows looking at container previews when the premium edition is installed."
+    default: true
+  ultimatetweak.auto-ladder:
+    description: "Allows automatic ladder climbing and sliding when the premium edition is installed."
+    default: true
+  ultimatetweak.elevator:
+    description: "Allows using configured elevator blocks when the premium edition is installed."
+    default: true
+  ultimatetweak.elevator.bypass.same-block:
+    description: "Bypasses the elevator same-block restriction."
+    default: false
+  ultimatetweak.elevator.bypass.blocks-between:
+    description: "Bypasses the elevator blocks-between restriction."
+    default: false
+  ultimatetweak.multi-armor:
+    description: "Allows automatic chestplate and Elytra swapping when the premium edition is installed."
+    default: true
+  ultimatetweak.projectile-prediction:
+    description: "Allows packet-only projectile path and impact prediction when the premium edition is installed."
+    default: true
+  ultimatetweak.block-highlighter.treasure:
+    description: "Highlights nearby treasure containers when the premium edition is installed."
+    default: true
+  ultimatetweak.block-highlighter.bypass.occlusion:
+    description: "Allows premium block highlights to remain visible through obstructing blocks."
+    default: false
+  ultimatetweak.guide.admin:
+    description: "Allows managing premium guide targets for online players."
+    default: op

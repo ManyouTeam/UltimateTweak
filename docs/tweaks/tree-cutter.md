@@ -10,6 +10,8 @@ worlds:
   mode: blacklist
   list: []
 
+permission: "ultimatetweak.tree-cutter"
+
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
 
@@ -60,6 +62,12 @@ mining-time:
   percent-per-log: 100.0
   max-percent: 5000.0
 
+# Deduct this many food points each time Tree Cutter activates.
+# One hunger icon equals 2 food points. The tweak will not activate if the player has too little food.
+hunger-cost:
+  enabled: false
+  amount: 1
+
 damage-actions: []
 
 break-actions:
@@ -73,12 +81,16 @@ conditions: []
 ```
 {% endcode %}
 
+All numeric options support PlaceholderAPI placeholders and mathematical expressions. Values containing placeholders or formulas should be quoted as YAML strings.
+
+* `permission`: permission required to use Tree Cutter. Leave it blank to disable the permission check.
 * `require-shift`: whether the player must sneak.
 * `match-item.trigger`: item rules that can trigger Tree Cutter. Should use [Match Item Format](../format/match-item-format.md) here.
 * `match-item.leaf-break`: breaks leaves when the held item matches these rules. Should use [Match Item Format](../format/match-item-format.md) here.
 * `animation`: falling direction, glow, duration, and optional falling-tree damage.
 * `damage-glow`: visual feedback while the tree is being mined.
 * `mining-time`: increases mining time based on the number of logs.
+* `hunger-cost`: when enabled, requires and deducts `amount` food points each time Tree Cutter activates. One hunger icon equals 2 food points.
 * `damage-actions` / `break-actions`: actions run while mining or after completion. Should use [Action Format](../format/action-format.md) here. Supported placeholders:
   * `{log-amount}`
   * `{leaf-amount}`

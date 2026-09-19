@@ -1,10 +1,13 @@
-enabled: true
+enabled: false
 
 # blacklist: enabled in every world except those listed below.
 # whitelist: enabled only in the worlds listed below.
 worlds:
   mode: blacklist
   list: []
+
+# Leave blank to allow every player that passes conditions.
+permission: "ultimatetweak.vein-mine"
 
 # Minimum interval between multiblock detections for the same player.
 cooldown-ticks: 5
@@ -57,6 +60,12 @@ mining-time:
   enabled: true
   percent-per-block: 100.0
   max-percent: 5000.0
+
+# Deduct this many food points each time Vein Mine activates.
+# One hunger icon equals 2 food points. The tweak will not activate if the player has too little food.
+hunger-cost:
+  enabled: false
+  amount: 1
 
 damage-actions: []
 

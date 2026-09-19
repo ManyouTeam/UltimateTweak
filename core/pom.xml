@@ -290,12 +290,6 @@
             <version>7.0.2-SNAPSHOT</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-            <groupId>io.github.tofaa2</groupId>
-            <artifactId>spigot</artifactId>
-            <version>3.3.6-SNAPSHOT</version>
-            <scope>compile</scope>
-        </dependency>
     </dependencies>
     <build>
         <plugins>

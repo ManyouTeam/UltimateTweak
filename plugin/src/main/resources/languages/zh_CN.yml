@@ -13,6 +13,7 @@ command-tab:
   type-item-id: "[输入你想要的物品 ID]"
 
 dupe-removed: "&#98FB98[UltimateTweak] &f你的背包的一件非法物品已被移除!"
+multiblock-hunger-insufficient: "&#98FB98[UltimateTweak] &c饱食度不足，需要至少 &e{required} &c点饱食度才能发动。当前：&e{current}&c。"
 tree-debug:
   enabled: "&#98FB98[UltimateTweak] &a已启用树定义调试：&e{id}"
   enabled-hint: "&#98FB98[UltimateTweak] &7现在尝试挖掘一棵树。使用 /ut debug off 关闭调试。"

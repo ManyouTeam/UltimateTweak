@@ -5,6 +5,7 @@ import cn.superiormc.ultimatetweak.objects.ObjectCondition;
 import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import org.bukkit.Color;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 
@@ -60,30 +61,38 @@ public abstract class AbstractMultiBlockConfig extends AbstractTweakConfig {
         }
     }
 
-    public int getDamageGlowDurationTicks() {
-        return Math.max(1, getInt("damage-glow.duration-ticks", 40));
+    public int getDamageGlowDurationTicks(Player player) {
+        return Math.max(1, getInt("damage-glow.duration-ticks", 40, player));
     }
 
-    public int getDamageGlowViewDistance() {
-        return Math.max(1, getInt("damage-glow.view-distance", 24));
+    public int getDamageGlowViewDistance(Player player) {
+        return Math.max(1, getInt("damage-glow.view-distance", 24, player));
     }
 
     public boolean isMiningTimeEnabled() {
         return getBoolean("mining-time.enabled", true);
     }
 
-    public int getCooldownTicks() {
-        return Math.max(0, getInt("cooldown-ticks", 5));
+    public int getCooldownTicks(Player player) {
+        return Math.max(0, getInt("cooldown-ticks", 5, player));
     }
 
-    public int getBlocksPerTick() {
-        return Math.max(1, getInt("blocks-per-tick", 32));
+    public int getBlocksPerTick(Player player) {
+        return Math.max(1, getInt("blocks-per-tick", 32, player));
     }
 
-    public abstract double getMiningTimePercentPerBlock();
+    public abstract double getMiningTimePercentPerBlock(Player player);
 
-    public double getMaxMiningTimePercent() {
-        return Math.max(0.0, getDouble("mining-time.max-percent", 5000.0));
+    public double getMaxMiningTimePercent(Player player) {
+        return Math.max(0.0, getDouble("mining-time.max-percent", 5000.0, player));
+    }
+
+    public boolean isHungerCostEnabled() {
+        return getBoolean("hunger-cost.enabled", false);
+    }
+
+    public int getHungerCostAmount(Player player) {
+        return Math.max(0, getInt("hunger-cost.amount", 1, player));
     }
 
     public boolean isRequireSneaking() {

@@ -1,5 +1,7 @@
 # 🏛️Structure Announcer
 
+The configured `permission` is required to receive structure announcements. Leave it blank to disable the permission check.
+
 ## Config
 
 ```yaml
@@ -8,6 +10,8 @@ enabled: true
 worlds:
   mode: blacklist
   list: []
+
+permission: "ultimatetweak.structure-announcer"
 
 # Empty list means all structures.
 # Supports names like village_plains or minecraft:village_plains.

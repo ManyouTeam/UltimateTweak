@@ -18,6 +18,7 @@ target/
 # Local reference projects
 /Logically-1.15.8-free.jar_Decompiler.com/
 /falling-trees-datapack/
+/premium/
 
 # Runtime and OS files
 *.log

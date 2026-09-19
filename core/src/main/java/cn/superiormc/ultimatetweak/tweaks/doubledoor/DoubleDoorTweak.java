@@ -1,6 +1,5 @@
 package cn.superiormc.ultimatetweak.tweaks.doubledoor;
 
-import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.HookManager;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
@@ -55,7 +54,7 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
         }
 
         Player player = event.getPlayer();
-        if (!getConfig().getConditions().getAllBoolean(player)) {
+        if (!hasTweakPermission(player) || !getConfig().getConditions().getAllBoolean(player)) {
             return;
         }
 
@@ -101,7 +100,7 @@ public class DoubleDoorTweak extends AbstractTweak<DoubleDoorConfig> {
     }
 
     private boolean isAnimationAvailable() {
-        return getConfig().isAnimationEnabled() && UltimateTweak.isEntityLibAvailable();
+        return getConfig().isAnimationEnabled();
     }
 
     @Override

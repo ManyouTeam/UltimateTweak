@@ -98,7 +98,7 @@ public class BiomeAnnouncerTweak extends AbstractTweak<BiomeAnnouncerConfig> {
             removePlayer(player.getUniqueId());
             return;
         }
-        if (!isWorldEnabled(player.getWorld())) {
+        if (!isWorldEnabled(player.getWorld()) || !hasTweakPermission(player)) {
             removePlayer(player.getUniqueId());
             return;
         }

@@ -6,6 +6,9 @@ worlds:
   mode: blacklist
   list: []
 
+# Leave blank to allow every player that passes conditions.
+permission: "ultimatetweak.double-door"
+
 animation:
   enabled: true
   single-door: false

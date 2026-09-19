@@ -92,7 +92,8 @@ public class VeinMineTweak extends AbstractMultiBlockTweak<VeinMineConfig, VeinM
         pending.add(origin);
         visited.add(LocationKey.of(origin));
 
-        while (!pending.isEmpty() && result.size() < getConfig().getMaxBlocks()) {
+        int maxBlocks = getConfig().getMaxBlocks(player);
+        while (!pending.isEmpty() && result.size() < maxBlocks) {
             Block block = pending.remove();
             if (!blockId.equals(HookManager.hookManager.getBlockId(block))) {
                 continue;

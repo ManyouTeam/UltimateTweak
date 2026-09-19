@@ -3,6 +3,7 @@ package cn.superiormc.ultimatetweak.tweaks.multiblock;
 import cn.superiormc.ultimatetweak.UltimateTweak;
 import cn.superiormc.ultimatetweak.managers.AttributeModifyManager;
 import cn.superiormc.ultimatetweak.managers.HookManager;
+import cn.superiormc.ultimatetweak.managers.LanguageManager;
 import cn.superiormc.ultimatetweak.managers.MatchItemManager;
 import cn.superiormc.ultimatetweak.tweaks.AbstractTweak;
 import cn.superiormc.ultimatetweak.tweaks.TweakEventType;
@@ -79,7 +80,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
                 || !shouldTrigger(player, block.getLocation())) {
             return;
         }
-        int cooldownTicks = getConfig().getCooldownTicks();
+        int cooldownTicks = getConfig().getCooldownTicks(player);
         if (cooldownTicks > 0) {
             long now = System.nanoTime();
             Long previous = lastDetectionNanos.get(playerId);
@@ -90,6 +91,9 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
         Detection<D> detection = detect(player, block);
         if (detection == null || detection.blocks().isEmpty()) {
+            return;
+        }
+        if (!handleHungerCost(player, false)) {
             return;
         }
 
@@ -152,6 +156,10 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
         blocks.removeIf(block -> !HookManager.hookManager.getProtectionCanBreak(event.getPlayer(), block.getLocation()));
         if (blocks.isEmpty()) {
+            removeSession(session);
+            return;
+        }
+        if (!handleHungerCost(event.getPlayer(), true)) {
             removeSession(session);
             return;
         }
@@ -232,7 +240,8 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
     }
 
     protected boolean shouldTrigger(Player player, Location location) {
-        if (player == null || getConfig().isRequireSneaking() && !player.isSneaking()) {
+        if (player == null || !hasTweakPermission(player)
+                || getConfig().isRequireSneaking() && !player.isSneaking()) {
             return false;
         }
         if (!getConfig().getConditions().getAllBoolean(player)) {
@@ -243,6 +252,23 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
         return !getConfig().hasTriggerItem() || MatchItemManager.matchItemManager.getMatch(
                 getConfig().getTriggerItem(), player.getInventory().getItemInMainHand());
+    }
+
+    private boolean handleHungerCost(Player player, boolean consume) {
+        if (!getConfig().isHungerCostEnabled()) {
+            return true;
+        }
+        int amount = getConfig().getHungerCostAmount(player);
+        if (player.getFoodLevel() >= amount) {
+            if (consume) {
+                player.setFoodLevel(player.getFoodLevel() - amount);
+            }
+            return true;
+        }
+        LanguageManager.languageManager.sendStringText(player, "multiblock-hunger-insufficient",
+                "required", String.valueOf(amount),
+                "current", String.valueOf(player.getFoodLevel()));
+        return false;
     }
 
     protected final void prepareDefaultDrops(MultiBlockSession session, List<Block> blocks, Set<LocationKey> dropKeys) {
@@ -286,7 +312,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
             return;
         }
 
-        int blocksPerTick = getConfig().getBlocksPerTick();
+        int blocksPerTick = getConfig().getBlocksPerTick(player);
         int[] index = {0};
         SchedulerUtil[] task = new SchedulerUtil[1];
         session.breaking = true;
@@ -390,7 +416,11 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
         }
 
         private void applyGlow() {
-            if (!getConfig().isDamageGlowEnabled() || !UltimateTweak.isEntityLibAvailable()) {
+            if (!getConfig().isDamageGlowEnabled()) {
+                return;
+            }
+            Player player = Bukkit.getPlayer(playerId);
+            if (player == null) {
                 return;
             }
             List<Block> blocks = new ArrayList<>(getCurrentBlocks(data()));
@@ -403,7 +433,7 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
             clearGlow();
             Block origin = breakingBlockKey.getBlock();
             glowSession = MultiBlockDisplayGlow.show(origin.getWorld(), getGlowCenter(data(), origin),
-                    blocks, getConfig().getDamageGlowDurationTicks(), getConfig().getDamageGlowViewDistance(),
+                    blocks, getConfig().getDamageGlowDurationTicks(player), getConfig().getDamageGlowViewDistance(player),
                     getConfig().getDamageGlowColor());
         }
 
@@ -415,7 +445,8 @@ public abstract class AbstractMultiBlockTweak<C extends AbstractMultiBlockConfig
             if (player == null) {
                 return;
             }
-            double totalPercent = Math.min((detection.miningBlockCount() - 1) * getConfig().getMiningTimePercentPerBlock(), getConfig().getMaxMiningTimePercent());
+            double totalPercent = Math.min((detection.miningBlockCount() - 1)
+                    * getConfig().getMiningTimePercentPerBlock(player), getConfig().getMaxMiningTimePercent(player));
             if (totalPercent <= 0.0) {
                 return;
             }

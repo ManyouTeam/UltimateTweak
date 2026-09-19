@@ -1,14 +1,13 @@
 package cn.superiormc.ultimatetweak.tweaks.display;
 
-import cn.superiormc.ultimatetweak.UltimateTweak;
+import cn.superiormc.ultimatetweak.packets.entity.PacketEntity;
+import cn.superiormc.ultimatetweak.packets.entity.meta.display.BlockDisplayMeta;
 import com.github.retrooper.packetevents.protocol.entity.type.EntityTypes;
 import com.github.retrooper.packetevents.protocol.world.Location;
 import com.github.retrooper.packetevents.protocol.world.states.WrappedBlockState;
 import com.github.retrooper.packetevents.util.Quaternion4f;
 import com.github.retrooper.packetevents.util.Vector3f;
 import io.github.retrooper.packetevents.util.SpigotConversionUtil;
-import me.tofaa.entitylib.meta.display.BlockDisplayMeta;
-import me.tofaa.entitylib.wrapper.WrapperEntity;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -72,7 +71,7 @@ public abstract class AbstractBlockDisplayEffect {
     }
 
     protected boolean spawnDisplays() {
-        if (!UltimateTweak.isEntityLibAvailable() || !hasBlocks()) {
+        if (!hasBlocks()) {
             return false;
         }
 
@@ -83,7 +82,7 @@ public abstract class AbstractBlockDisplayEffect {
 
         for (DisplayBlock block : blocks) {
             WrappedBlockState blockState = SpigotConversionUtil.fromBukkitBlockData(block.blockData());
-            WrapperEntity entity = spawnBlockDisplay(viewers, block, blockState, null);
+            PacketEntity entity = spawnBlockDisplay(viewers, block, blockState, null);
             if (entity != null) {
                 entities.add(new DisplayEntity(block, blockState, entity));
             }
@@ -161,7 +160,7 @@ public abstract class AbstractBlockDisplayEffect {
         return viewers;
     }
 
-    private WrapperEntity spawnBlockDisplay(List<Player> viewers,
+    private PacketEntity spawnBlockDisplay(List<Player> viewers,
                                             DisplayBlock block,
                                             WrappedBlockState blockState,
                                             Quaternionf rotation) {
@@ -169,7 +168,7 @@ public abstract class AbstractBlockDisplayEffect {
             return null;
         }
 
-        WrapperEntity entity = new WrapperEntity(EntityTypes.BLOCK_DISPLAY);
+        PacketEntity entity = new PacketEntity(EntityTypes.BLOCK_DISPLAY);
         applyMetadata(entity, blockState, rotation);
         for (Player viewer : viewers) {
             entity.addViewer(viewer.getUniqueId());
@@ -178,7 +177,7 @@ public abstract class AbstractBlockDisplayEffect {
         return entity;
     }
 
-    private void updateMetadata(WrapperEntity entity,
+    private void updateMetadata(PacketEntity entity,
                                 WrappedBlockState blockState,
                                 Quaternionf rotation,
                                 org.joml.Vector3f translation) {
@@ -190,11 +189,11 @@ public abstract class AbstractBlockDisplayEffect {
         entity.refresh();
     }
 
-    private void applyMetadata(WrapperEntity entity, WrappedBlockState blockState, Quaternionf rotation) {
+    private void applyMetadata(PacketEntity entity, WrappedBlockState blockState, Quaternionf rotation) {
         applyMetadata(entity, blockState, rotation, null);
     }
 
-    private void applyMetadata(WrapperEntity entity,
+    private void applyMetadata(PacketEntity entity,
                                WrappedBlockState blockState,
                                Quaternionf rotation,
                                org.joml.Vector3f translation) {
@@ -239,7 +238,7 @@ public abstract class AbstractBlockDisplayEffect {
         }
     }
 
-    protected record DisplayEntity(DisplayBlock block, WrappedBlockState blockState, WrapperEntity entity) {
+    protected record DisplayEntity(DisplayBlock block, WrappedBlockState blockState, PacketEntity entity) {
 
     }
 

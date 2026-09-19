@@ -10,6 +10,8 @@ worlds:
   mode: blacklist
   list: []
 
+permission: "ultimatetweak.best-tool"
+
 # hotbar: search slots 0-8; inventory: search the entire player storage inventory.
 # Please note that use inventory mode will cost ~x5 extra performance, don't recommended to use it.
 search-scope: hotbar
@@ -35,6 +37,7 @@ switch-actions: []
 ```
 {% endcode %}
 
+* `permission`: permission required to use Best Tool. Leave it blank to disable the permission check.
 * `search-scope`: `hotbar` searches slots 0-8; `inventory` searches the whole player storage inventory.
 * `cooldown-ticks`: minimum interval between checks for the same player.
 * `fortune-multiplier-per-level`: Fortune level multiplier used when scoring candidate tools.

@@ -37,4 +37,10 @@ public class CommandManager {
         registeredCommands.put(command.getId(), command);
     }
 
+    public void unregisterSubCommand(AbstractCommand command) {
+        if (command != null) {
+            registeredCommands.remove(command.getId(), command);
+        }
+    }
+
 }

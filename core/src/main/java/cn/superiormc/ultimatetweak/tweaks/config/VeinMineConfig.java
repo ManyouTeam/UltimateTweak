@@ -7,6 +7,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.entity.Player;
 
 public class VeinMineConfig extends AbstractMultiBlockConfig {
 
@@ -49,8 +50,8 @@ public class VeinMineConfig extends AbstractMultiBlockConfig {
         return rules;
     }
 
-    public int getMaxBlocks() {
-        return Math.max(1, getInt("search.max-blocks", 64));
+    public int getMaxBlocks(Player player) {
+        return Math.max(1, getInt("search.max-blocks", 64, player));
     }
 
     public boolean shouldSearchDiagonally() {
@@ -58,8 +59,8 @@ public class VeinMineConfig extends AbstractMultiBlockConfig {
     }
 
     @Override
-    public double getMiningTimePercentPerBlock() {
-        return Math.max(0.0, getDouble("mining-time.percent-per-block", 100.0));
+    public double getMiningTimePercentPerBlock(Player player) {
+        return Math.max(0.0, getDouble("mining-time.percent-per-block", 100.0, player));
     }
 
     public record VeinRule(ConfigurationSection matchItem, Set<String> matchBlocks) {

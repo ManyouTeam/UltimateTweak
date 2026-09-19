@@ -70,6 +70,33 @@ It also supports many protection plugins, including:
 
 ---
 
+## 📦 Editions and Builds
+
+The public repository always builds the free edition and does not contain premium implementation code:
+
+```shell
+mvn clean package
+```
+
+This produces `plugin/target/UltimateTweak-<version>-free.jar`.
+
+Premium sources are maintained in a separate private Git repository. For an authorized premium build, check that repository out into the ignored `premium` directory and enable the Maven profile:
+
+```text
+UltimateTweak/
+├── core/
+├── plugin/
+└── premium/       # separate private Git repository
+```
+
+```shell
+mvn -Ppremium clean package
+```
+
+This produces `plugin/target/UltimateTweak-<version>-premium.jar`. The premium module is shaded into that single plugin JAR; it is never resolved or packaged by the normal free build.
+
+---
+
 ## 📜 License
 
 Please read the [LICENSE](LICENSE) file before modifying or redistributing this project.

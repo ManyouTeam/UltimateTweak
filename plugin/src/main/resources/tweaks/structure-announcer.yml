@@ -6,6 +6,9 @@ worlds:
   mode: blacklist
   list: []
 
+# Leave blank to allow every player that passes conditions.
+permission: "ultimatetweak.structure-announcer"
+
 # Empty list means all structures.
 # Supports names like village_plains or minecraft:village_plains.
 structures: []

@@ -47,16 +47,16 @@ public class TreeCutterConfig extends AbstractMultiBlockConfig {
         return getString("animation.direction", "random").trim().toLowerCase();
     }
 
-    public int getAnimationDurationTicks() {
-        return Math.max(1, getInt("animation.duration-ticks", 30));
+    public int getAnimationDurationTicks(Player player) {
+        return Math.max(1, getInt("animation.duration-ticks", 30, player));
     }
 
-    public int getAnimationIntervalTicks() {
-        return Math.max(1, getInt("animation.interval-ticks", 1));
+    public int getAnimationIntervalTicks(Player player) {
+        return Math.max(1, getInt("animation.interval-ticks", 1, player));
     }
 
-    public int getAnimationViewDistance() {
-        return Math.max(1, getInt("animation.view-distance", 48));
+    public int getAnimationViewDistance(Player player) {
+        return Math.max(1, getInt("animation.view-distance", 48, player));
     }
 
     public boolean isFallDamageEnabled() {
@@ -71,20 +71,20 @@ public class TreeCutterConfig extends AbstractMultiBlockConfig {
         return getBoolean("animation.fall-damage.entities", true);
     }
 
-    public double getFallDamageAmount() {
-        return Math.max(0.0, getDouble("animation.fall-damage.damage", 6.0));
+    public double getFallDamageAmount(Player player) {
+        return Math.max(0.0, getDouble("animation.fall-damage.damage", 6.0, player));
     }
 
-    public double getFallDamageMinAngle() {
-        return Math.max(0.0, Math.min(92.0, getDouble("animation.fall-damage.min-angle", 15.0)));
+    public double getFallDamageMinAngle(Player player) {
+        return Math.max(0.0, Math.min(92.0, getDouble("animation.fall-damage.min-angle", 15.0, player)));
     }
 
-    public double getFallDamageHitRadius() {
-        return Math.max(0.0, getDouble("animation.fall-damage.hit-radius", 0.5));
+    public double getFallDamageHitRadius(Player player) {
+        return Math.max(0.0, getDouble("animation.fall-damage.hit-radius", 0.5, player));
     }
 
-    public int getFallDamageCheckIntervalTicks() {
-        return Math.max(1, getInt("animation.fall-damage.check-interval-ticks", 2));
+    public int getFallDamageCheckIntervalTicks(Player player) {
+        return Math.max(1, getInt("animation.fall-damage.check-interval-ticks", 2, player));
     }
 
     @Override
@@ -92,28 +92,28 @@ public class TreeCutterConfig extends AbstractMultiBlockConfig {
         return getBoolean("damage-glow.hide-breaking-block", false);
     }
 
-    public double getMiningTimePercentPerLog() {
+    public double getMiningTimePercentPerLog(Player player) {
         String path = getConfig().contains("mining-time.percent-per-log")
                 ? "mining-time.percent-per-log"
                 : "mining-time.multiplier-per-log";
-        return Math.max(0.0, getDouble(path, 10.0));
+        return Math.max(0.0, getDouble(path, 10.0, player));
     }
 
     @Override
-    public double getMiningTimePercentPerBlock() {
-        return getMiningTimePercentPerLog();
+    public double getMiningTimePercentPerBlock(Player player) {
+        return getMiningTimePercentPerLog(player);
     }
 
     @Override
-    public double getMaxMiningTimePercent() {
+    public double getMaxMiningTimePercent(Player player) {
         String path = getConfig().contains("mining-time.max-percent")
                 ? "mining-time.max-percent"
                 : "mining-time.max-multiplier";
-        return Math.max(0.0, getDouble(path, 500.0));
+        return Math.max(0.0, getDouble(path, 500.0, player));
     }
 
     @Override
-    public int getDamageGlowViewDistance() {
-        return Math.max(1, getInt("damage-glow.view-distance", getAnimationViewDistance()));
+    public int getDamageGlowViewDistance(Player player) {
+        return Math.max(1, getInt("damage-glow.view-distance", getAnimationViewDistance(player), player));
     }
 }

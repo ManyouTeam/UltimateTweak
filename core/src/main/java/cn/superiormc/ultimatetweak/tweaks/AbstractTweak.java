@@ -2,6 +2,7 @@ package cn.superiormc.ultimatetweak.tweaks;
 
 import cn.superiormc.ultimatetweak.tweaks.config.AbstractTweakConfig;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.event.block.BlockDamageEvent;
 import org.bukkit.event.block.BlockDamageAbortEvent;
 import org.bukkit.event.block.BlockBreakEvent;
@@ -13,9 +14,12 @@ import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.world.ChunkLoadEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.event.player.PlayerItemHeldEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerSwapHandItemsEvent;
+import org.bukkit.event.player.PlayerToggleSneakEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 
 import java.util.EnumSet;
@@ -47,6 +51,11 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
 
     public boolean isWorldEnabled(World world) {
         return world != null && config.isWorldEnabled(world.getName());
+    }
+
+    protected final boolean hasTweakPermission(Player player) {
+        String permission = config.getPermission();
+        return permission.isEmpty() || player.hasPermission(permission);
     }
 
     public Set<TweakEventType> getEventTypes() {
@@ -84,7 +93,16 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
     public void onPlayerInteract(PlayerInteractEvent event) {
     }
 
+    public void onPlayerItemHeld(PlayerItemHeldEvent event) {
+    }
+
     public void onPlayerMove(PlayerMoveEvent event) {
+    }
+
+    public void onPlayerSwapHandItems(PlayerSwapHandItemsEvent event) {
+    }
+
+    public void onPlayerToggleSneak(PlayerToggleSneakEvent event) {
     }
 
     public void onSwingItem(UUID playerId) {
