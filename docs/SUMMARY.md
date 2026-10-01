@@ -38,6 +38,8 @@
 * [📦Better Drop Display](tweaks/better-drop-display.md)
 * [✨Block Highlighter](tweaks/block-highlighter.md)
 * [👁️Container Preview](tweaks/container-preview.md)
+* [💥Damage Indicator](tweaks/damage-indicator.md)
+* [❤️Health Bar](tweaks/health-bar.md)
 * [↕️Elevator](tweaks/elevator.md)
 * [🧭Guide](tweaks/guide.md)
 * [🪽Multi Armor](tweaks/multi-armor.md)

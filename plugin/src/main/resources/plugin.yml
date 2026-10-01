@@ -30,6 +30,8 @@ softdepend:
   - NeigeItems
   - eco
   # Others
+  - BetterModel
+  - ModelEngine
   - NBTAPI
   - LevelledMobs
   - MythicChanger
@@ -44,6 +46,12 @@ commands:
     usage: "/ultimatetweak"
     description: "UltimateTweak Main Command."
 permissions:
+  ultimatetweak.health-bar:
+    description: "Allows viewing entity health bars when the premium edition is installed."
+    default: true
+  ultimatetweak.damage-indicator:
+    description: "Allows viewing damage indicators when the premium edition is installed."
+    default: true
   ultimatetweak.best-tool:
     description: "Allows automatic best-tool selection."
     default: true
@@ -95,3 +103,6 @@ permissions:
   ultimatetweak.guide.admin:
     description: "Allows managing premium guide targets for online players."
     default: op
+  ultimatetweak.guide.toggle:
+    description: "Allows hiding or showing your own Guide markers."
+    default: true

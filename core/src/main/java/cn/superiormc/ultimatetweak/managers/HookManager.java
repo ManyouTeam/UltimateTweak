@@ -5,12 +5,14 @@ import cn.gtemc.itembridge.api.util.Pair;
 import cn.gtemc.itembridge.core.BukkitItemBridge;
 import cn.superiormc.ultimatetweak.hooks.blocks.*;
 import cn.superiormc.ultimatetweak.hooks.items.*;
+import cn.superiormc.ultimatetweak.hooks.hitbox.*;
 import cn.superiormc.ultimatetweak.hooks.protection.*;
 import cn.superiormc.ultimatetweak.utils.CommonUtil;
 import cn.superiormc.ultimatetweak.utils.TextUtil;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,6 +21,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
+import java.util.LinkedHashMap;
+import java.util.Set;
 
 public class HookManager {
 
@@ -30,6 +34,10 @@ public class HookManager {
 
     private Map<String, AbstractBlockHook> blockHooks;
 
+    private final Map<String, AbstractHitboxHook> hitboxHooks = new LinkedHashMap<>();
+
+    private final Set<String> failedHitboxHooks = java.util.concurrent.ConcurrentHashMap.newKeySet();
+
     private ItemBridge<ItemStack, Player> itemBridgeHook = null;
 
     public HookManager() {
@@ -37,12 +45,53 @@ public class HookManager {
         initBlockHook();
         initProtectionHook();
         initItemHook();
+        initHitboxHook();
         if (ConfigManager.configManager.getString("hook-item-method").equalsIgnoreCase("ITEMBRIDGE")) {
             itemBridgeHook = BukkitItemBridge.builder()
                     .onHookSuccess(p -> TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fUSItemBridge successfully hook into " + p + "."))
                     .detectSupportedPlugins()
                     .build();
         }
+    }
+
+    private void initHitboxHook() {
+        if (CommonUtil.checkPluginLoad("BetterModel")) {
+            registerNewHitboxHook("BetterModel", new HitboxBetterModelHook());
+        }
+        if (CommonUtil.checkPluginLoad("ModelEngine")) {
+            registerNewHitboxHook("ModelEngine", new HitboxModelEngineHook());
+        }
+    }
+
+    public void registerNewHitboxHook(String pluginName, AbstractHitboxHook hook) {
+        if (!hitboxHooks.containsKey(pluginName)) {
+            hitboxHooks.put(pluginName, hook);
+            TextUtil.sendMessage(null, TextUtil.pluginPrefix() + " §fHooking hitboxes into " + pluginName + "...");
+        }
+    }
+
+    public Collection<String> getLoadedHitboxHookNames() {
+        return Collections.unmodifiableCollection(hitboxHooks.keySet());
+    }
+
+    public HitboxResult resolveHitbox(Entity entity) {
+        for (AbstractHitboxHook hook : hitboxHooks.values()) {
+            if (failedHitboxHooks.contains(hook.getPluginName())) {
+                continue;
+            }
+            try {
+                HitboxResult result = hook.resolve(entity);
+                if (result != null) {
+                    return result;
+                }
+            } catch (RuntimeException | LinkageError exception) {
+                if (failedHitboxHooks.add(hook.getPluginName())) {
+                    ErrorManager.errorManager.sendErrorMessage("§cHitbox hook " + hook.getPluginName()
+                            + " disabled until restart: " + exception);
+                }
+            }
+        }
+        return new HitboxResult(entity, entity.getBoundingBox());
     }
 
     private void initItemHook() {

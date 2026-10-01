@@ -2,6 +2,13 @@
 
 ## **Direct compatibility**
 
+### Model hitbox plugins
+
+* BetterModel 3.5.0
+* ModelEngine R4.2.0
+
+These optional core hooks resolve model collision bounds and their owning entities. [Damage Indicator](../tweaks/damage-indicator.md) in TweakExpansion uses them for floating damage and healing numbers.
+
 ### <mark style="color:red;">Directly</mark> supported item plugins list
 
 * ItemsAdder

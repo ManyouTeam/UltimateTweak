@@ -16,15 +16,14 @@ public class MainCommandTab implements TabCompleter {
         List<String> tempVal1 = new ArrayList<>();
         if (args.length == 1) {
             for (AbstractCommand object : CommandManager.commandManager.getSubCommandsMap().values()) {
-                if (object.getRequiredPermission() != null && !object.getRequiredPermission().isEmpty()
-                        && !sender.hasPermission(object.getRequiredPermission())) {
+                if (!object.hasRequiredPermission(sender, new String[]{object.getId()})) {
                     continue;
                 }
                 tempVal1.add(object.getId());
             }
         } else {
             AbstractCommand tempVal2 = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
-            if (tempVal2 != null && tempVal2.getRequiredPermission() != null && sender.hasPermission(tempVal2.getRequiredPermission())) {
+            if (tempVal2 != null && tempVal2.hasRequiredPermission(sender, args)) {
                 AbstractCommand object = CommandManager.commandManager.getSubCommandsMap().get(args[0]);
                 tempVal1 = object.filterTabResult(args, sender instanceof Player ? (Player) sender : null);
             }

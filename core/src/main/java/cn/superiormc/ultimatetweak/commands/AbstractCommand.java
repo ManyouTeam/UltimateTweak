@@ -42,6 +42,11 @@ public abstract class AbstractCommand {
         return requiredPermission;
     }
 
+    public boolean hasRequiredPermission(CommandSender sender, String[] args) {
+        return requiredPermission == null || requiredPermission.isEmpty()
+                || sender.hasPermission(requiredPermission);
+    }
+
     public boolean getLengthCorrect(int length, CommandSender sender) {
         if (requiredConsoleArgLength == null || requiredConsoleArgLength.length == 0) {
             requiredConsoleArgLength = requiredArgLength;
@@ -67,7 +72,9 @@ public abstract class AbstractCommand {
     }
 
     public List<String> filterTabResult(String[] args, Player player) {
-        List<String> results = getTabResult(args, player);
+        // Subcommands may return immutable collections (for example Stream.toList()).
+        // Filtering is in-place, so always take ownership of a mutable copy first.
+        List<String> results = new ArrayList<>(getTabResult(args, player));
         if (args.length == 0) {
             return results;
         }

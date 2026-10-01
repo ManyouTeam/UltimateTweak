@@ -9,6 +9,8 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -124,6 +126,12 @@ public class AbstractTweak<C extends AbstractTweakConfig> {
     }
 
     public void onEntityDamageByEntity(EntityDamageByEntityEvent event) {
+    }
+
+    public void onEntityDamageMonitor(EntityDamageEvent event) {
+    }
+
+    public void onEntityRegainHealthMonitor(EntityRegainHealthEvent event) {
     }
 
     public void onEntityDeath(EntityDeathEvent event) {

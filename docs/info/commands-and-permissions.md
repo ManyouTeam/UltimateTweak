@@ -30,6 +30,8 @@ These permission values can be changed with the `permission` option in each twea
 | Permission | Description | Default |
 | --- | --- | --- |
 | `ultimatetweak.container-preview` | Allows looking at container previews. | Everyone |
+| `ultimatetweak.damage-indicator` | Allows viewing floating damage and healing numbers. | Everyone |
+| `ultimatetweak.health-bar` | Allows viewing overhead entity health bars. | Everyone |
 | `ultimatetweak.auto-ladder` | Allows automatic ladder climbing and sliding. | Everyone |
 | `ultimatetweak.elevator` | Allows using configured elevator blocks. | Everyone |
 | `ultimatetweak.elevator.bypass.same-block` | Bypasses the elevator same-block restriction. | Nobody |

@@ -19,6 +19,13 @@ The default management permission is `ultimatetweak.guide.admin`. The player bei
 | `/ut guide remove <player> <id>` | Removes one custom target. |
 | `/ut guide clear <player>` | Removes all custom targets from a player. |
 | `/ut guide list <player>` | Lists a player's custom target IDs. |
+| `/ut guide hide` | Hides all Guide markers for yourself, including bed spawn, last death, and administrator targets. The preference is saved across reconnects. |
+| `/ut guide show` | Shows all Guide markers for yourself again. |
+| `/ut guide hide <player>` / `/ut guide show <player>` | Hides or shows every marker for an online player. Requires the Guide admin permission. |
+
+Players can use `hide` and `show` with the `ultimatetweak.guide.toggle` permission (granted to everyone by default). Managing another player's markers still requires `ultimatetweak.guide.admin`.
+
+The `toggle-permission` option changes the permission required to hide or show your own markers. `permission` continues to control management of another player's targets and markers.
 
 ## Config
 
@@ -27,6 +34,7 @@ The default management permission is `ultimatetweak.guide.admin`. The player bei
 enabled: true
 
 permission: "ultimatetweak.guide.admin"
+toggle-permission: "ultimatetweak.guide.toggle"
 
 worlds:
   mode: blacklist

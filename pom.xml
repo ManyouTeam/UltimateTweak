@@ -21,7 +21,7 @@
   <properties>
     <java.version>16</java.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <revision>1.3.0</revision>
+    <revision>1.3.2</revision>
     <name>UltimateTweak</name>
     <edition>free</edition>
   </properties>
@@ -45,6 +45,15 @@
 
   <build>
     <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.1</version>
+        <configuration>
+          <!-- Rebuild before shading: an existing shaded JAR contains dependency classes. -->
+          <forceCreation>true</forceCreation>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>

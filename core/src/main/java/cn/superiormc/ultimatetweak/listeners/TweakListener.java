@@ -12,6 +12,9 @@ import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockDropItemEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityRegainHealthEvent;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.event.entity.ItemSpawnEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
@@ -155,6 +158,22 @@ public class TweakListener implements Listener {
     public void onEntityDeath(EntityDeathEvent event) {
         for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_DEATH)) {
             TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(), () -> tweak.onEntityDeath(event));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityRegainHealthMonitor(EntityRegainHealthEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_REGAIN_HEALTH_MONITOR)) {
+            TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(),
+                    () -> tweak.onEntityRegainHealthMonitor(event));
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+    public void onEntityDamageMonitor(EntityDamageEvent event) {
+        for (AbstractTweak<?> tweak : TweakManager.tweakManager.getTweaks(TweakEventType.ENTITY_DAMAGE_MONITOR)) {
+            TweakManager.tweakManager.call(tweak, event.getEntity().getWorld(),
+                    () -> tweak.onEntityDamageMonitor(event));
         }
     }
 
