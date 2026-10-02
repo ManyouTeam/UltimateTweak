@@ -159,6 +159,11 @@ public class SpigotMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public String getItemTranslateKey(ItemStack item) {
+        return item.getTranslationKey();
+    }
+
+    @Override
     public String getItemItemName(ItemMeta meta) {
         return meta.getItemName();
     }

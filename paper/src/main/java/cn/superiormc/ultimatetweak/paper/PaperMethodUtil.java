@@ -170,6 +170,11 @@ public class PaperMethodUtil implements SpecialMethodUtil {
     }
 
     @Override
+    public String getItemTranslateKey(ItemStack item) {
+        return item.translationKey();
+    }
+
+    @Override
     public String getItemItemName(ItemMeta meta) {
         return PaperTextUtil.changeToString(meta.itemName());
     }

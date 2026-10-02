@@ -40,6 +40,8 @@ public interface SpecialMethodUtil {
 
     String legacyParse(String text);
 
+    String getItemTranslateKey(ItemStack item);
+
     String getItemName(ItemMeta meta);
 
     String getItemItemName(ItemMeta meta);
